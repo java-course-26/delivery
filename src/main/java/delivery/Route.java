@@ -10,19 +10,23 @@ public class Route {
 
     /**
      * Своё расстояние «по кварталам». Пока пишем прямо здесь.
-     * На домашке заменишь его вызовом Delivery.distance(...) напарника и удалишь этот метод.
+     * Потом заменить его вызовом Delivery.distance(...) напарника и удалишь этот метод.
      */
     public static int dist(int x1, int y1, int x2, int y2) {
-        // TODO
-        return 0;
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
-
-    // ================= Задачи на пару =================
 
     /** Длина маршрута: старт → адрес order[0] → order[1] → ... (обратно не возвращаемся). */
     public static int routeLength(int startX, int startY, int[] xs, int[] ys, int[] order) {
-        // TODO
-        return 0;
+        int length = 0;
+        int x = startX;
+        int y = startY;
+        for (int stop : order) {
+            length += dist(x, y, xs[stop], ys[stop]);
+            x = xs[stop];
+            y = ys[stop];
+        }
+        return length;
     }
 
     /**
@@ -31,8 +35,25 @@ public class Route {
      * При равенстве — адрес с меньшим индексом. Вернуть порядок объезда.
      */
     public static int[] greedyOrder(int startX, int startY, int[] xs, int[] ys) {
-        // TODO
-        return new int[0];
+        int n = xs.length;
+        boolean[] visited = new boolean[n];
+        int[] order = new int[n];
+        int x = startX;
+        int y = startY;
+        for (int step = 0; step < n; step++) {
+            int best = -1;
+            for (int i = 0; i < n; i++) {
+                if (!visited[i] && (best == -1
+                        || dist(x, y, xs[i], ys[i]) < dist(x, y, xs[best], ys[best]))) {
+                    best = i;
+                }
+            }
+            visited[best] = true;
+            order[step] = best;
+            x = xs[best];
+            y = ys[best];
+        }
+        return order;
     }
 
     /**
@@ -41,19 +62,29 @@ public class Route {
      * Сравни с жадным: всегда ли жадный находит лучший?
      */
     public static int bestLength4(int startX, int startY, int[] xs, int[] ys) {
-        // TODO
-        return 0;
+        int best = -1;
+        for (int a = 0; a < 4; a++) {
+            for (int b = 0; b < 4; b++) {
+                if (b == a) continue;
+                for (int c = 0; c < 4; c++) {
+                    if (c == a || c == b) continue;
+                    int d = 6 - a - b - c;
+                    int len = routeLength(startX, startY, xs, ys, new int[]{a, b, c, d});
+                    if (best == -1 || len < best) best = len;
+                }
+            }
+        }
+        return best;
     }
 
-    /**
+     /**
      * Интеграция с другим модулем (Delivery).
      * Длина маршрута, если курьер стартует из ресторана restaurantId.
-     * Расстояния считай через Delivery.distance(...). После этого удали свой dist,
+     * Расстояния считай через Delivery.distance(...). После этого удалить свой dist,
      * а routeLength и greedyOrder переведи на Delivery.distance — проверки выше должны остаться OK.
      */
     public static int routeLengthFromRestaurant(int restaurantId, int[] xs, int[] ys, int[] order) {
-        // TODO
-        return 0;
+        return routeLength(DeliveryData.restaurantX[restaurantId], DeliveryData.restaurantY[restaurantId], xs, ys, order);
     }
 
     public static void main(String[] args) {
