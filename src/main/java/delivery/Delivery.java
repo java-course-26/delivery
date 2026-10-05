@@ -9,8 +9,7 @@ public class Delivery {
 
     /** Манхэттенское расстояние между точками. */
     public static int distance(int x1, int y1, int x2, int y2) {
-        // TODO
-        return 0;
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
 
     /**
@@ -19,21 +18,33 @@ public class Delivery {
      * больше 10 км — не доставляем, вернуть -1.
      */
     public static int deliveryCost(int distance) {
-        // TODO
-        return 0;
+        if (distance <= 3){
+            return 9900;
+        }
+        else if (distance <= 10){
+            return 9900 + ((distance - 3) * 2000);
+        }
+        else {
+            return -1;}
     }
 
     /**
      * Ночная надбавка: с 23:00 до 06:00 (minute >= 1380 или minute < 360) цена растёт на 30%.
      */
     public static int nightPrice(int cost, int minute) {
-        // TODO
-        return 0;
+        if (minute >= 1380 || minute < 360){
+            return (int) Math.round((double) cost * 1.3);
+        }
+        return cost;
     }
 
     /** Лежит ли точка внутри карты города: 0..10 по обеим координатам. */
     public static boolean isInCity(int x, int y) {
-        // TODO
+        if (x >= 0 && y >= 0){
+            if (x <= 10 && y <= 10){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -44,8 +55,26 @@ public class Delivery {
      * Иначе: расстояние от ресторана → deliveryCost → nightPrice.
      */
     public static int deliveryCostForCart(int[] cart, int restaurantId, int x, int y, int minute) {
-        // TODO
-        return 0;
+        int sum = Cart.cartTotal(cart);
+        if (sum == 0) {
+            for (int id: cart){
+                sum += DeliveryData.dishPrices[id];
+            }
+        }
+
+        if (sum >= 150000){
+            return 0;
+        }
+        int rx = DeliveryData.restaurantX[restaurantId];
+        int ry = DeliveryData.restaurantY[restaurantId];
+
+        int dist = distance(rx, ry, x, y);
+
+        int cost = deliveryCost(dist);
+        if (cost == -1){
+            return -1;
+        }
+        return nightPrice(cost, minute);
     }
 
     public static void main(String[] args) {
