@@ -18,8 +18,13 @@ public class Cart {
 
     /** Сколько раз блюдо dishIndex лежит в корзине. */
     public static int countOf(int[] cart, int dishIndex) {
-        // TODO
-        return 0;
+        int count = 0;
+        for (int i = 0; i < cart.length; i++) {
+            if (cart[i] == dishIndex) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /** Сколько разных блюд в корзине: {0, 0, 3, 3, 2} → 3. */
