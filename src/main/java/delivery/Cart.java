@@ -29,8 +29,20 @@ public class Cart {
 
     /** Сколько разных блюд в корзине: {0, 0, 3, 3, 2} → 3. */
     public static int distinctCount(int[] cart) {
-        // TODO
-        return 0;
+        int uniqueCount = 0;
+        for (int i = 0; i < cart.length; i++) {
+            boolean alreadySeen = false;
+            for (int j = 0; j < i; j++) {
+                if (cart[i] == cart[j]) {
+                    alreadySeen = true;
+                    break;
+                }
+            }
+            if (!alreadySeen) {
+                uniqueCount++;
+            }
+        }
+        return uniqueCount;
     }
 
     /**
