@@ -1,5 +1,7 @@
 package src.main.java.delivery;
 
+import java.sql.SQLOutput;
+
 /**
  * Модуль 6. КУРЬЕРЫ.
  * Данные — DeliveryData.courierNames, courierX, courierY, courierBusy, courierOrdersToday.
@@ -8,20 +10,42 @@ public class Couriers {
 
     /** Сколько курьеров сейчас свободны. */
     public static int freeCount() {
-        // TODO
-        return 0;
+        int counter = 0;
+        for (boolean n:DeliveryData.courierBusy){
+            if (n == false){
+                counter++;
+            }
+        }
+        return counter;
     }
 
     /** Свободный курьер с наименьшим числом заказов за день. Нет свободных — -1. */
     public static int leastLoadedFree() {
-        // TODO
-        return -1;
+        if (DeliveryData.courierNames == null || DeliveryData.courierBusy == null || DeliveryData.courierOrdersToday == null){
+            return 0;
+        }
+        int naimZakaz = 1000;
+        int figovyKurier = 0;
+        String name = "";
+        for (int i=0;i<DeliveryData.courierNames.length;i++){
+            if ((DeliveryData.courierBusy[i]==false) &&  (naimZakaz > DeliveryData.courierOrdersToday[i])){
+                name = DeliveryData.courierNames[i];
+                naimZakaz = DeliveryData.courierOrdersToday[i];
+                figovyKurier = i;
+            }
+        }
+        return figovyKurier;
     }
 
     /** Заработок курьера за день в копейках: 150 ₽ за заказ + бонус 500 ₽, если заказов 10 и больше. */
     public static int earnings(int courierIndex) {
-        // TODO
-        return 0;
+        if (courierIndex < 0 || courierIndex >= DeliveryData.courierNames.length){
+            System.out.println("Введено некорректное значение");
+            return 0;
+        }
+        int bonus = DeliveryData.courierOrdersToday[courierIndex] >= 10?500:0;
+        int money = DeliveryData.courierOrdersToday[courierIndex] * 150 + bonus;
+        return money*100;
     }
 
     /**
@@ -30,9 +54,27 @@ public class Couriers {
      * Вернуть массив: сколько новых заказов получил каждый курьер.
      * DeliveryData не менять — загрузку копируем в свой массив.
      */
+
+
     public static int[] distribute(int k) {
-        // TODO
-        return new int[0];
+        int[] currentLoad = DeliveryData.courierOrdersToday.clone();
+        int[] result = new int[DeliveryData.courierNames.length];
+        for (int order = 0; order < k; order++) {
+            int minCourier = -1;
+            for (int i = 0; i < currentLoad.length; i++) {
+                if (DeliveryData.courierBusy[i]==false) {
+                    if (minCourier == -1 || currentLoad[i] < currentLoad[minCourier]) {
+                        minCourier = i;
+                    }
+                }
+            }
+            if (minCourier == -1) {
+                break;
+            }
+            result[minCourier]++;
+            currentLoad[minCourier]++;
+        }
+        return result;
     }
 
     /**
