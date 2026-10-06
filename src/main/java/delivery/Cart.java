@@ -8,8 +8,12 @@ public class Cart {
 
     /** Сумма корзины в копейках. Пустая корзина — 0. */
     public static int cartTotal(int[] cart) {
-        // TODO
-        return 0;
+        int summa = 0;
+        for(int i = 0; i < cart.length; i++){
+            int dishIndex = cart[i];
+            summa += DeliveryData.dishPrices[dishIndex];
+        }
+        return summa;
     }
 
     /** Сколько раз блюдо dishIndex лежит в корзине. */
