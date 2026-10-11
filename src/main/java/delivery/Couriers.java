@@ -83,8 +83,36 @@ public class Couriers {
      * При равном расстоянии — тот, у кого меньше заказов за день.
      */
     public static int nearestFree(int x, int y) {
-        // TODO
-        return -1;
+        boolean isBusy = true;
+        for (int j = 0; j < DeliveryData.courierBusy.length;j++){
+            if (DeliveryData.courierBusy[j]==false){
+                isBusy = false;
+                break;
+            }
+        }
+        if (isBusy){
+            System.out.println("Все курьеры заняты");
+            return -1;
+        }
+        int nearest = Integer.MAX_VALUE;
+        int index_courier = 0;
+        for (int i=0;i<DeliveryData.courierX.length;i++){
+            if (DeliveryData.courierBusy[i]){
+                continue;
+            }
+            if(Delivery.distance(x,y,DeliveryData.courierX[i], DeliveryData.courierY[i]) == nearest){
+                if(DeliveryData.courierOrdersToday[index_courier] < DeliveryData.courierOrdersToday[i]){
+                    continue;
+                }else{
+                    index_courier = i;
+                }
+            }
+            if((DeliveryData.courierBusy[i]==false) && (Delivery.distance(x,y,DeliveryData.courierX[i], DeliveryData.courierY[i])) < nearest){
+                index_courier = i;
+                nearest = Delivery.distance(x,y,DeliveryData.courierX[i], DeliveryData.courierY[i]);
+            }
+        }
+        return index_courier;
     }
 
     public static void main(String[] args) {
