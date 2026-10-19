@@ -99,8 +99,14 @@ public class Cart {
      * Используй Menu.findDish(...) из модуля напарника.
      */
     public static int cartTotalByNames(String[] names) {
-        // TODO
-        return 0;
+        int totalSum = 0;
+        for (String name : names) {
+            int dishIndex = Menu.findDish(name);
+            if (dishIndex != -1) {
+                totalSum += DeliveryData.dishPrices[dishIndex];
+            }
+        }
+        return totalSum;
     }
 
     public static void main(String[] args) {
