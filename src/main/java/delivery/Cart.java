@@ -50,8 +50,14 @@ public class Cart {
      * Считаем, что все блюда из одного ресторана — берём ресторан первого блюда.
      */
     public static boolean isMinOrderReached(int[] cart) {
-        // TODO
-        return false;
+        if (cart.length == 0) {
+            return false;
+        }
+        int firstDish = cart[0];
+        int restaurantIndex = DeliveryData.dishRestaurantIndexes[firstDish];
+        int minPrice = DeliveryData.restaurantMinPrices[restaurantIndex];
+        int total = cartTotal(cart);
+        return total >= minPrice;
     }
 
     /** Все ли блюда из одного ресторана. */
