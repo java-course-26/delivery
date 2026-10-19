@@ -80,8 +80,17 @@ public class Cart {
 
     /** Индекс самого дорогого блюда в корзине (именно индекс блюда, не позиция в корзине). */
     public static int mostExpensive(int[] cart) {
-        // TODO
-        return -1;
+        if (cart.length == 0) {
+            return -1;
+        }
+        int bestDish = cart[0];
+        for (int i = 1; i < cart.length; i++) {
+            int currentDish = cart[i];
+            if (DeliveryData.dishPrices[currentDish] > DeliveryData.dishPrices[bestDish]) {
+                bestDish = currentDish;
+            }
+        }
+        return bestDish;
     }
 
     /**
