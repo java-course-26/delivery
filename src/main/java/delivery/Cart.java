@@ -62,8 +62,20 @@ public class Cart {
 
     /** Все ли блюда из одного ресторана. */
     public static boolean isSingleRestaurant(int[] cart) {
-        // TODO
-        return false;
+
+        if (cart.length <= 1) {
+            return true;
+        }
+        int firstDish = cart[0];
+        int firstRestaurant = DeliveryData.dishRestaurantIndexes[firstDish];
+        for (int i = 1; i < cart.length; i++) {
+            int currentDish = cart[i];
+            int currentRestaurant = DeliveryData.dishRestaurantIndexes[currentDish];
+            if (currentRestaurant != firstRestaurant) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Индекс самого дорогого блюда в корзине (именно индекс блюда, не позиция в корзине). */
