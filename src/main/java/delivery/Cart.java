@@ -54,23 +54,22 @@ public class Cart {
             return false;
         }
         int firstDish = cart[0];
-        int restaurantIndex = DeliveryData.dishRestaurantIndexes[firstDish];
-        int minPrice = DeliveryData.restaurantMinPrices[restaurantIndex];
+        int restaurantIndex = DeliveryData.dishRestaurant[firstDish];
+        int minPrice = DeliveryData.restaurantMinOrder[restaurantIndex];
         int total = cartTotal(cart);
         return total >= minPrice;
     }
 
     /** Все ли блюда из одного ресторана. */
     public static boolean isSingleRestaurant(int[] cart) {
-
         if (cart.length <= 1) {
             return true;
         }
         int firstDish = cart[0];
-        int firstRestaurant = DeliveryData.dishRestaurantIndexes[firstDish];
+        int firstRestaurant = DeliveryData.dishRestaurant[firstDish];
         for (int i = 1; i < cart.length; i++) {
             int currentDish = cart[i];
-            int currentRestaurant = DeliveryData.dishRestaurantIndexes[currentDish];
+            int currentRestaurant = DeliveryData.dishRestaurant[currentDish];
             if (currentRestaurant != firstRestaurant) {
                 return false;
             }
