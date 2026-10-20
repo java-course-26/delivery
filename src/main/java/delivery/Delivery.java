@@ -33,7 +33,7 @@ public class Delivery {
      */
     public static int nightPrice(int cost, int minute) {
         if (minute > 1440){
-            minute = minute / 1440;
+            minute = minute % 1440;
         }
         if (minute >= 1380 || minute < 360){
             return (int) Math.round((double) cost * 1.3);
