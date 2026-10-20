@@ -106,6 +106,20 @@ public class Couriers {
         return index_courier;
     }
 
+    public static int minloadGap(int[] orders){
+        if (orders.length < 2){return -1;}
+        int minLoad = Integer.MAX_VALUE;
+        for (int i=0;i<orders.length-1;i++){
+            for (int j=1;j<orders.length;j++){
+                if(i==j){continue;}
+                if (Math.abs(orders[i]-orders[j]) < minLoad){
+                    minLoad = Math.abs(orders[i]-orders[j]);
+                }
+            }
+        }
+        return minLoad;
+    }
+
     public static void main(String[] args) {
         Check.eq("freeCount()", freeCount(), 4);
         Check.eq("leastLoadedFree()", leastLoadedFree(), 2);
@@ -127,5 +141,10 @@ public class Couriers {
         Check.eq("distribute(10)",distribute(10),new int[]{3,0,6,1,0,0});
         Check.eq("nearestFree(4,4)",nearestFree(4,4),2);
         Check.eq("nearestFree(9,9)",nearestFree(9,9),2);
+
+        System.out.println("---Замер---");
+        Check.eq("minLoadGap(заказы курьеров)",minloadGap(DeliveryData.courierOrdersToday),1);
+        Check.eq("minLoadGap({10,4})",minloadGap(new int[]{10,4}),6);
+        Check.eq("minLoadGap({5})",minloadGap(new int[]{5}),-1);
     }
 }
