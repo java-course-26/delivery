@@ -51,7 +51,7 @@ public class Analytics {
     public static int revenueByRestaurant(int restaurantId) {
         int u = restaurantId;
         int sumRevenue=0;
-        for (int i=1;i<DeliveryData.orderRestaurant.length;i++){
+        for (int i=0;i<DeliveryData.orderRestaurant.length;i++){
             if(DeliveryData.orderRestaurant[i]==u){
                 sumRevenue+=DeliveryData.orderTotal[i];
             }
@@ -98,5 +98,9 @@ public class Analytics {
 
         System.out.println("--- Интеграция ---");
         Check.eq("revenueOfBestRestaurant()", revenueOfBestRestaurant(), 254000);
+        System.out.println("--- Крайние случаи ---");
+        Check.eq("revenueByRestaurant(0)",revenueByRestaurant(0),254000);
+        Check.eq("revenueByRestaurant(4)",revenueByRestaurant(4),124000);
+
     }
 }
