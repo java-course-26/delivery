@@ -1,6 +1,6 @@
 package src.main.java.delivery;
 
-import java.util.Arrays;
+
 
 /**
  * Модуль 9. АНАЛИТИКА.
@@ -10,22 +10,25 @@ import java.util.Arrays;
 public class Analytics {
 
     /** Выручка за день в копейках. */
-    public static int totalRevenue() {
-
-        return Arrays.stream(DeliveryData.orderTotal).sum();
+    public static double totalRevenue() {
+        double sumTotal =0;
+        for (int x: DeliveryData.orderTotal){
+            sumTotal += x;
+        }
+        return sumTotal;
     }
 
     /** Средний чек в копейках (double). */
     public static double averageCheck() {
-        double SrArif = Arrays.stream(DeliveryData.orderTotal).sum()/DeliveryData.orderTotal.length;
-        return SrArif;
+        double srArif = totalRevenue()/DeliveryData.orderTotal.length;
+        return srArif;
     }
-    public static int[] FindPeakHour() {
-        int[] HourStat = new int[24];
+    public static int[] countByHour() {
+        int[] hourStat = new int[24];
         for (int i : DeliveryData.orderHour){
-            HourStat[i]++;
+            hourStat[i]++;
         }
-        return HourStat;
+        return hourStat;
     }
     /**
      * Пиковый час — час, в который было больше всего заказов.
@@ -33,14 +36,15 @@ public class Analytics {
      */
     public static int peakHour() {
         int maxx = 0;
-        int NuzhnHour=0;
-        for (int i=0;i< FindPeakHour().length;i++){
-            if (maxx<FindPeakHour()[i]){
-                NuzhnHour= i;
-                maxx = FindPeakHour()[i];
+        int nuzhnHour=0;
+        int[] fph= countByHour();
+        for (int i=0;i< fph.length;i++){
+            if (maxx<fph[i]){
+                nuzhnHour= i;
+                maxx = fph[i];
             }
         }
-        return NuzhnHour;
+        return nuzhnHour;
     }
 
     /** Выручка одного ресторана за день. */
@@ -54,7 +58,7 @@ public class Analytics {
         }
         return sumRevenue;
     }
-    public static int[] ZakaziUClients(){
+    public static int[] ordersPerClient(){
         int[] ZakazClients= new int[DeliveryData.orderClient.length];
         for(int i=0;i<ZakazClients.length;i++) {
             int g = DeliveryData.orderClient[i];
@@ -65,7 +69,7 @@ public class Analytics {
     /** Сколько клиентов сделали 2 и больше заказов за день. */
     public static int repeatClients() {
         int sum=0;
-        for (int i:ZakaziUClients()){
+        for (int i:ordersPerClient()){
             if(i>1){
                 sum++;
             }
@@ -84,7 +88,6 @@ public class Analytics {
 
     public static void main(String[] args) {
 
-        //System.out.println(DeliveryData.orderTotal);
         Check.eq("totalRevenue()", totalRevenue(), 1482000);
         Check.eq("averageCheck()", averageCheck(), 74100.0);
         Check.eq("peakHour()", peakHour(), 19);
