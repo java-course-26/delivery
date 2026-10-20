@@ -1,7 +1,4 @@
 package src.main.java.delivery;
-
-import java.sql.SQLOutput;
-
 /**
  * Модуль 6. КУРЬЕРЫ.
  * Данные — DeliveryData.courierNames, courierX, courierY, courierBusy, courierOrdersToday.
@@ -21,15 +18,10 @@ public class Couriers {
 
     /** Свободный курьер с наименьшим числом заказов за день. Нет свободных — -1. */
     public static int leastLoadedFree() {
-        if (DeliveryData.courierNames == null || DeliveryData.courierBusy == null || DeliveryData.courierOrdersToday == null){
-            return 0;
-        }
-        int naimZakaz = 1000;
-        int figovyKurier = 0;
-        String name = "";
+        int naimZakaz = Integer.MAX_VALUE;
+        int figovyKurier = -1;
         for (int i=0;i<DeliveryData.courierNames.length;i++){
             if ((DeliveryData.courierBusy[i]==false) &&  (naimZakaz > DeliveryData.courierOrdersToday[i])){
-                name = DeliveryData.courierNames[i];
                 naimZakaz = DeliveryData.courierOrdersToday[i];
                 figovyKurier = i;
             }
@@ -40,7 +32,6 @@ public class Couriers {
     /** Заработок курьера за день в копейках: 150 ₽ за заказ + бонус 500 ₽, если заказов 10 и больше. */
     public static int earnings(int courierIndex) {
         if (courierIndex < 0 || courierIndex >= DeliveryData.courierNames.length){
-            System.out.println("Введено некорректное значение");
             return 0;
         }
         int bonus = DeliveryData.courierOrdersToday[courierIndex] >= 10?500:0;
@@ -91,25 +82,25 @@ public class Couriers {
             }
         }
         if (isBusy){
-            System.out.println("Все курьеры заняты");
             return -1;
         }
         int nearest = Integer.MAX_VALUE;
         int index_courier = 0;
         for (int i=0;i<DeliveryData.courierX.length;i++){
+            int dist = Delivery.distance(x,y,DeliveryData.courierX[i], DeliveryData.courierY[i]);
             if (DeliveryData.courierBusy[i]){
                 continue;
             }
-            if(Delivery.distance(x,y,DeliveryData.courierX[i], DeliveryData.courierY[i]) == nearest){
+            if(dist == nearest){
                 if(DeliveryData.courierOrdersToday[index_courier] < DeliveryData.courierOrdersToday[i]){
                     continue;
                 }else{
                     index_courier = i;
                 }
             }
-            if((DeliveryData.courierBusy[i]==false) && (Delivery.distance(x,y,DeliveryData.courierX[i], DeliveryData.courierY[i])) < nearest){
+            if((DeliveryData.courierBusy[i]==false) && (dist < nearest)){
                 index_courier = i;
-                nearest = Delivery.distance(x,y,DeliveryData.courierX[i], DeliveryData.courierY[i]);
+                nearest = dist;
             }
         }
         return index_courier;
@@ -129,5 +120,12 @@ public class Couriers {
         Check.eq("nearestFree(5, 5)", nearestFree(5, 5), 2);
         Check.eq("nearestFree(1, 9)", nearestFree(1, 9), 3);
         Check.eq("nearestFree(4, 3)", nearestFree(4, 3), 0);
+
+        System.out.println("---Крайние случаи---");
+        Check.eq("earnings(5)",earnings(5),215000);
+        Check.eq("distribute(4)",distribute(4),new int[]{1,0,3,0,0,0});
+        Check.eq("distribute(10)",distribute(10),new int[]{3,0,6,1,0,0});
+        Check.eq("nearestFree(4,4)",nearestFree(4,4),2);
+        Check.eq("nearestFree(9,9)",nearestFree(9,9),2);
     }
 }
