@@ -32,14 +32,14 @@ public class Delivery {
      * Ночная надбавка: с 23:00 до 06:00 (minute >= 1380 или minute < 360) цена растёт на 30%.
      */
     public static int nightPrice(int cost, int minute) {
-        /*while (minute > 1440){
-            minute = minute - 1440;
-        }*/
         if (minute > 1440){
             minute = minute / 1440;
         }
         if (minute >= 1380 || minute < 360){
             return (int) Math.round((double) cost * 1.3);
+        }
+        if (cost == -1){
+            return -1;
         }
         return cost;
     }
@@ -64,6 +64,8 @@ public class Delivery {
         if (Cart.cartTotal(cart) >= 150000){
             return 0;
         }
+
+
 
         int rx = DeliveryData.restaurantX[restaurantId];
         int ry = DeliveryData.restaurantY[restaurantId];
@@ -98,5 +100,14 @@ public class Delivery {
         System.out.println("--- Интеграция ---");
         Check.eq("deliveryCostForCart({8}, 2, 1, 1, 1410)", deliveryCostForCart(new int[]{8}, 2, 1, 1, 1410), 28470);
         Check.eq("deliveryCostForCart({9, 9, 8}, 2, 1, 1, 1410)", deliveryCostForCart(new int[]{9, 9, 8}, 2, 1, 1, 1410), 0);
+
+        System.out.println("--- Крайние случаи ---");
+        Check.eq("nightPrice(9900, 2000)", nightPrice(9900, 2000), 9900);
+        Check.eq("nightPrice(10000, 1800)", nightPrice(10000, 1800), 10000);
+        Check.eq("deliveryCostForCart({0},0,2,3,2000)", deliveryCostForCart(new int[]{0},0,2,3,2000),9900);
+        Check.eq("nightPrice(10000, 1380)", nightPrice(10000, 1380), 13000);
+        Check.eq("nightPrice(10000, 360)", nightPrice(10000, 360), 10000);
+        Check.eq("deliveryCost(10)", deliveryCost(10), 23900);
+
     }
 }
