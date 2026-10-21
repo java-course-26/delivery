@@ -1,6 +1,7 @@
 package src.main.java.delivery;
 
 
+import java.util.Arrays;
 
 /**
  * Модуль 9. АНАЛИТИКА.
@@ -59,12 +60,12 @@ public class Analytics {
         return sumRevenue;
     }
     public static int[] ordersPerClient(){
-        int[] ZakazClients= new int[DeliveryData.orderClient.length];
-        for(int i=0;i<ZakazClients.length;i++) {
+        int[] zakazClients= new int[DeliveryData.orderClient.length];
+        for(int i=0;i<zakazClients.length;i++) {
             int g = DeliveryData.orderClient[i];
-            ZakazClients[g]++;
+            zakazClients[g]++;
         }
-        return ZakazClients;
+        return zakazClients;
     }
     /** Сколько клиентов сделали 2 и больше заказов за день. */
     public static int repeatClients() {
@@ -75,6 +76,59 @@ public class Analytics {
             }
         }
         return sum;
+    }
+    public static int maxFromArray(int [] arr) {
+        int max = 0;
+        for (int i : arr) {
+            if (max < i) {
+                max = i;
+            }
+        }
+        return max;
+    }
+    /** Сколько клиентов сделали 2 и больше заказов за день. */
+    public static int repeatClients(int[] clients){
+        if (clients.length>1) {
+            int p = maxFromArray(clients)+1;
+            int[] zakazClients = new int[p];
+            for (int i:clients) {
+                zakazClients[i]++;
+            }
+            int sum = 0;
+            for (int i : zakazClients) {
+                if (i > 1) {
+                    sum++;
+                }
+            }
+            return sum;
+        }
+        if(clients.length ==1) {
+            return 1;
+        }
+        return 0;
+        }
+
+    public static int repeatClientsSlow(int[] clients){
+        int count=0;
+        for(int i=0;i<clients.length;i++) {
+            boolean isCounted = false;
+            for (int g = 0; g < i; g++) {
+                if (clients[i] == clients[g]) {
+                    isCounted = true;
+                    break;
+                }
+            }
+            if (!isCounted){
+                for (int r= i+1; r<clients.length;r++){
+                    if (clients[i] == clients[r]){
+                        count+=1;
+                        break;
+                    }
+                }
+
+            }
+        }
+        return count;
     }
 
     /** 
@@ -101,6 +155,13 @@ public class Analytics {
         System.out.println("--- Крайние случаи ---");
         Check.eq("revenueByRestaurant(0)",revenueByRestaurant(0),254000);
         Check.eq("revenueByRestaurant(4)",revenueByRestaurant(4),124000);
+        System.out.println("--- Замер ---");
+        Check.eq("repeatClients(клиенты за день)", repeatClients(DeliveryData.orderClient),5);
+        Check.eq("repeatClients({25,25})", repeatClients(new int[]{25,25}),1);
+        Check.eq("repeatClients({})", repeatClients(new int[]{}),0);
+        Check.eq("repeatClientsSlow(клиенты за день)", repeatClientsSlow(DeliveryData.orderClient),5);
+        Check.eq("repeatClientsSlow({7,7,7})", repeatClientsSlow(new int[]{7,7,7}),1);
+        Check.eq("repeatClientsSlow({})", repeatClientsSlow(new int[]{}),0);
 
     }
 }
