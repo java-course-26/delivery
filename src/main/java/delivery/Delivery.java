@@ -79,6 +79,19 @@ public class Delivery {
         return nightPrice(cost, minute);
     }
 
+    public static int maxDistance(int[] xs, int[] ys){
+        int maxXY = 0;
+        for (int i = 0; i < xs.length; i++) {
+            for (int j = i + 1; j < xs.length; j++) {
+                int dist = Math.abs(xs[i] - xs[j]) + Math.abs(ys[i] - ys[j]);
+                if (dist > maxXY) {
+                    maxXY = dist;
+                }
+            }
+        }
+        return maxXY;
+    }
+
     public static void main(String[] args) {
         Check.eq("distance(2, 3, 5, 7)", distance(2, 3, 5, 7), 7);
         Check.eq("distance(5, 7, 2, 3)", distance(5, 7, 2, 3), 7);
@@ -108,6 +121,11 @@ public class Delivery {
         Check.eq("nightPrice(10000, 1380)", nightPrice(10000, 1380), 13000);
         Check.eq("nightPrice(10000, 360)", nightPrice(10000, 360), 10000);
         Check.eq("deliveryCost(10)", deliveryCost(10), 23900);
+
+        System.out.println("--- Замер ---");
+        Check.eq("maxDistance(рестораны)", maxDistance(DeliveryData.restaurantX, DeliveryData.restaurantY), 14);
+        Check.eq("maxDistance({0,3}, {0,4})", maxDistance(new int[]{0,3}, new int[]{0,4}), 7);
+        Check.eq("maxDistance({}, {})", maxDistance(new int[]{}, new int[]{}), 0);
 
     }
 }
