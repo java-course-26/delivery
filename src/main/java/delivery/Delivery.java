@@ -9,8 +9,7 @@ public class Delivery {
 
     /** Манхэттенское расстояние между точками. */
     public static int distance(int x1, int y1, int x2, int y2) {
-        // TODO
-        return 0;
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
 
     /**
@@ -19,21 +18,39 @@ public class Delivery {
      * больше 10 км — не доставляем, вернуть -1.
      */
     public static int deliveryCost(int distance) {
-        // TODO
-        return 0;
+        if (distance <= 3){
+            return 9900;
+        }
+        else if (distance <= 10){
+            return 9900 + ((distance - 3) * 2000);
+        }
+        else {
+            return -1;}
     }
 
     /**
      * Ночная надбавка: с 23:00 до 06:00 (minute >= 1380 или minute < 360) цена растёт на 30%.
      */
     public static int nightPrice(int cost, int minute) {
-        // TODO
-        return 0;
+        if (minute > 1440){
+            minute = minute % 1440;
+        }
+        if (minute >= 1380 || minute < 360){
+            return (int) Math.round((double) cost * 1.3);
+        }
+        if (cost == -1){
+            return -1;
+        }
+        return cost;
     }
 
     /** Лежит ли точка внутри карты города: 0..10 по обеим координатам. */
     public static boolean isInCity(int x, int y) {
-        // TODO
+        if (x >= 0 && y >= 0){
+            if (x <= 10 && y <= 10){
+                return true;
+            }
+        }
         return false;
     }
 
@@ -44,8 +61,35 @@ public class Delivery {
      * Иначе: расстояние от ресторана → deliveryCost → nightPrice.
      */
     public static int deliveryCostForCart(int[] cart, int restaurantId, int x, int y, int minute) {
-        // TODO
-        return 0;
+        if (Cart.cartTotal(cart) >= 150000){
+            return 0;
+        }
+
+
+
+        int rx = DeliveryData.restaurantX[restaurantId];
+        int ry = DeliveryData.restaurantY[restaurantId];
+
+        int dist = distance(rx, ry, x, y);
+
+        int cost = deliveryCost(dist);
+        if (cost == -1){
+            return -1;
+        }
+        return nightPrice(cost, minute);
+    }
+
+    public static int maxDistance(int[] xs, int[] ys){
+        int maxXY = 0;
+        for (int i = 0; i < xs.length; i++) {
+            for (int j = i + 1; j < xs.length; j++) {
+                int dist = Math.abs(xs[i] - xs[j]) + Math.abs(ys[i] - ys[j]);
+                if (dist > maxXY) {
+                    maxXY = dist;
+                }
+            }
+        }
+        return maxXY;
     }
 
     public static void main(String[] args) {
@@ -60,6 +104,7 @@ public class Delivery {
         Check.eq("nightPrice(9900, 720)", nightPrice(9900, 720), 9900);
         Check.eq("nightPrice(9900, 360)", nightPrice(9900, 360), 9900);
         Check.eq("nightPrice(-1, 1400)", nightPrice(-1, 1400), -1);
+        Check.eq("nightPrice(1000, 1740)", nightPrice(1000, 1740), 1300);
 
         Check.eq("isInCity(10, 0)", isInCity(10, 0), true);
         Check.eq("isInCity(11, 5)", isInCity(11, 5), false);
@@ -68,5 +113,19 @@ public class Delivery {
         System.out.println("--- Интеграция ---");
         Check.eq("deliveryCostForCart({8}, 2, 1, 1, 1410)", deliveryCostForCart(new int[]{8}, 2, 1, 1, 1410), 28470);
         Check.eq("deliveryCostForCart({9, 9, 8}, 2, 1, 1, 1410)", deliveryCostForCart(new int[]{9, 9, 8}, 2, 1, 1, 1410), 0);
+
+        System.out.println("--- Крайние случаи ---");
+        Check.eq("nightPrice(9900, 2000)", nightPrice(9900, 2000), 9900);
+        Check.eq("nightPrice(10000, 1800)", nightPrice(10000, 1800), 10000);
+        Check.eq("deliveryCostForCart({0},0,2,3,2000)", deliveryCostForCart(new int[]{0},0,2,3,2000),9900);
+        Check.eq("nightPrice(10000, 1380)", nightPrice(10000, 1380), 13000);
+        Check.eq("nightPrice(10000, 360)", nightPrice(10000, 360), 10000);
+        Check.eq("deliveryCost(10)", deliveryCost(10), 23900);
+
+        System.out.println("--- Замер ---");
+        Check.eq("maxDistance(рестораны)", maxDistance(DeliveryData.restaurantX, DeliveryData.restaurantY), 14);
+        Check.eq("maxDistance({0,3}, {0,4})", maxDistance(new int[]{0,3}, new int[]{0,4}), 7);
+        Check.eq("maxDistance({}, {})", maxDistance(new int[]{}, new int[]{}), 0);
+
     }
 }
