@@ -101,7 +101,7 @@ public class Time {
         Check.eq("isOpen(2, 300)", isOpen(2, 300), false);
         Check.eq("isOpen(3, 200)", isOpen(3, 200), true);
         Check.eq("cookTime({0, 2, 3})", cookTime(new int[]{0, 2, 3}), 15);
-        Check.eq("cookTime({})", cookTime(new int[]{}, 0);
+        Check.eq("cookTime({})", cookTime(new int[]{}, 0));
 
         Check.eq("minutesUntilOpen(0, 540)", minutesUntilOpen(0, 540), 60);
         Check.eq("minutesUntilOpen(0, 1380)", minutesUntilOpen(0, 1380), 660);
