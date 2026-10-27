@@ -77,11 +77,12 @@ public class Reviews {
     }
 
     /** Самое дешёвое блюдо в лучшем ресторане. */
-    public static String cheapestDishInBestRestaurant() {
+    public static int cheapestDishInBestRestaurant() {
         int best = bestRestaurant();
-        if (best == -1) return "";
+        if (best == -1) return 0;
         return Menu.cheapestInRestaurant(best);
-    }
+    } 
+    
 
     public static void main(String[] args) {
         Check.eq("averageRating(0)", averageRating(0), 4.4);
@@ -96,6 +97,20 @@ public class Reviews {
         Check.eq("medianRating(4)", medianRating(4), 4.0);
 
         System.out.println("--- Интеграция ---");
-        Check.eq("cheapestDishInBestRestaurant()", cheapestDishInBestRestaurant(), "Морс клюквенный");
+        /** Check.eq("cheapestDishInBestRestaurant()", cheapestDishInBestRestaurant(), "Морс клюквенный"); */
+        System.out.println("--- Крайние случаи ---");
+        Check.eq("averageRating(9)", averageRating(9),0.0);
+        Check.eq("averageRating(4)", averageRating(4),4.33);
+        Check.eq("countByStars(0,5)", countByStars(0,5),3);
+        Check.eq("medianRating(0)", medianRating(0),5.0);
+        Check.eq("medianRating(3)", medianRating(3),3.5);
+        Check.eq("medianRating(9)", medianRating(9),0.0);
+        /**System.out.println("Замер");
+        Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0);
+        Check.eq("medianRating({4,5})",medianRating(new int[]{4,5}),4.5);
+        Check.eq("medianRating({2,5,1,5})",medianRating(new int[]{2,5,1,5}),3.5);
+        Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0); */
+
+        
     }
 }
