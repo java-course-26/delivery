@@ -99,9 +99,6 @@ public class Analytics {
             }
             return sum;
         }
-        if(clients.length ==1) {
-            return 1;
-        }
         return 0;
         }
 
@@ -152,6 +149,11 @@ public class Analytics {
         System.out.println("--- Крайние случаи ---");
         Check.eq("revenueByRestaurant(0)",revenueByRestaurant(0),254000);
         Check.eq("revenueByRestaurant(4)",revenueByRestaurant(4),124000);
+        Check.eq("repeatClients({5})",repeatClients(new int[]{5}),0);
+        Check.eq("repeatClients({1,2,3})",repeatClients(new int[]{1,2,3}),0);
+        Check.eq("repeatClients({7,7,7})",repeatClients(new int[]{7,7,7}),1);
+        Check.eq("repeatClients({5})",repeatClients(new int[]{5}),0);
+        Check.eq("repeatClients({1,2,3})",repeatClients(new int[]{1,2,3}),0);
         System.out.println("--- Замер ---");
         Check.eq("repeatClients(клиенты за день)", repeatClients(DeliveryData.orderClient),5);
         Check.eq("repeatClients({25,25})", repeatClients(new int[]{25,25}),1);
