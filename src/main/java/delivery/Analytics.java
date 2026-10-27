@@ -167,6 +167,11 @@ public class Analytics {
         Check.eq("repeatClientsSlow(клиенты за день)", repeatClientsSlow(DeliveryData.orderClient),5);
         Check.eq("repeatClientsSlow({7,7,7})", repeatClientsSlow(new int[]{7,7,7}),1);
         Check.eq("repeatClientsSlow({})", repeatClientsSlow(new int[]{}),0);
-
+        for (int seed=0;seed<100;seed++){
+            int[] data = BigData.randomArray(1000,0,1000,seed);
+            if (repeatClients(data) != repeatClientsSlow(data)){
+                System.out.println("FAIL"+ seed);
+            }
+        }
     }
 }
