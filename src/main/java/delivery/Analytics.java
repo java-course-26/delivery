@@ -130,8 +130,14 @@ public class Analytics {
      * Выручка ресторана с лучшим рейтингом. Используй Reviews.bestRestaurant() напарника. 
      */
     public static int revenueOfBestRestaurant() {
-        // TODO
-        return 0;
+        int sum=0;
+        int bestRestaurant = Reviews.bestRestaurant();
+        for (int i = 0; i< DeliveryData.orderTotal.length;i++){
+            if (DeliveryData.orderRestaurant[i] == bestRestaurant){
+                sum += DeliveryData.orderTotal[i];
+            }
+        }
+        return sum;
     }
 
     public static void main(String[] args) {
