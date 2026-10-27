@@ -1,5 +1,7 @@
 package src.main.java.delivery;
 
+import java.util.Arrays;
+
 /**
  * Модуль 8. ОТЗЫВЫ И РЕЙТИНГ.
  */
@@ -54,26 +56,35 @@ public class Reviews {
         }
         if (count == 0) return 0;
 
-        int[] ratings = new int[count];
+        int[] ratings = new int[count];  /**Создание нового массива */
+        
         int k = 0;
         for (int i = 0; i < DeliveryData.reviewRestaurant.length; i++) {
             if (DeliveryData.reviewRestaurant[i] == restaurantId) {
-                ratings[k++] = DeliveryData.reviewStars[i];
+                ratings[k] = DeliveryData.reviewStars[i];
+                k++;
             }
         }
+        double result = medianRating(ratings);
+        return result;
+        
+    }
 
+   public static double medianRating(int[] stars) {
+        int[] sorted=Arrays.copyOf(stars,stars.length);
+
+        int count = sorted.length;
         for (int i = 0; i < count - 1; i++) {
             for (int j = 0; j < count - 1 - i; j++) {
-                if (ratings[j] > ratings[j + 1]) {
-                    int t = ratings[j];
-                    ratings[j] = ratings[j + 1];
-                    ratings[j + 1] = t;
+                if (sorted[j] > sorted[j + 1]) {
+                    int t = sorted[j];
+                    sorted[j] = sorted[j + 1];
+                    sorted[j + 1] = t;
                 }
             }
         }
-
-        if (count % 2 == 1) return ratings[count / 2];
-        return (ratings[count / 2 - 1] + ratings[count / 2]) / 2.0;
+        if (count % 2 == 1) return sorted[(count / 2)];
+        return (sorted[count / 2 - 1] + sorted[count / 2]) / 2.0;
     }
 
     /** Самое дешёвое блюдо в лучшем ресторане. */
@@ -105,11 +116,11 @@ public class Reviews {
         Check.eq("medianRating(0)", medianRating(0),5.0);
         Check.eq("medianRating(3)", medianRating(3),3.5);
         Check.eq("medianRating(9)", medianRating(9),0.0);
-        /**System.out.println("Замер");
+        System.out.println("Замер");
         Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0);
         Check.eq("medianRating({4,5})",medianRating(new int[]{4,5}),4.5);
         Check.eq("medianRating({2,5,1,5})",medianRating(new int[]{2,5,1,5}),3.5);
-        Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0); */
+        Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0);
 
         
     }
