@@ -126,5 +126,13 @@ public class Cart {
         System.out.println("--- Интеграция ---");
         Check.eq("cartTotalByNames({Борщ, Морс клюквенный, Окрошка})",
                 cartTotalByNames(new String[]{"Борщ", "Морс клюквенный", "Окрошка"}), 40000);
+        System.out.println("--- Крайние случаи ---");
+        Check.eq("isMinOrderReached({16})", isMinOrderReached(new int[]{16}), false);
+        Check.eq("isSingleRestaurant({})", isSingleRestaurant(new int[]{}), true);
+        Check.eq("isSingleRestaurant({0, 1, 2, 4})", isSingleRestaurant(new int[]{0, 1, 2, 4}), false);
+        Check.eq("mostExpensive({})", mostExpensive(new int[]{}), -1);
+        Check.eq("mostExpensive({2, 13})", mostExpensive(new int[]{2, 13}), 2);
+        Check.eq("cartTotal({18, 18})", cartTotal(new int[]{18, 18}), 32000);
+
     }
 }
