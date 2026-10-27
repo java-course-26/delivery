@@ -32,14 +32,14 @@ public class Delivery {
      * Ночная надбавка: с 23:00 до 06:00 (minute >= 1380 или minute < 360) цена растёт на 30%.
      */
     public static int nightPrice(int cost, int minute) {
+        if (cost == -1){
+            return -1;
+        }
         if (minute > 1440){
             minute = minute % 1440;
         }
-        if (minute >= 1380 || minute < 360){
+        if (minute >= 1380 || minute < 360) {
             return (int) Math.round((double) cost * 1.3);
-        }
-        if (cost == -1){
-            return -1;
         }
         return cost;
     }
