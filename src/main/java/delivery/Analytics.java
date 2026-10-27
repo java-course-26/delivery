@@ -1,7 +1,7 @@
 package src.main.java.delivery;
 
 
-import java.util.Arrays;
+
 
 /**
  * Модуль 9. АНАЛИТИКА.
@@ -11,8 +11,8 @@ import java.util.Arrays;
 public class Analytics {
 
     /** Выручка за день в копейках. */
-    public static double totalRevenue() {
-        double sumTotal =0;
+    public static int totalRevenue() {
+        int sumTotal =0;
         for (int x: DeliveryData.orderTotal){
             sumTotal += x;
         }
@@ -59,18 +59,15 @@ public class Analytics {
         }
         return sumRevenue;
     }
-    public static int[] ordersPerClient(){
+    /** Сколько клиентов сделали 2 и больше заказов за день. */
+    public static int repeatClients() {
         int[] zakazClients= new int[DeliveryData.orderClient.length];
         for(int i=0;i<zakazClients.length;i++) {
             int g = DeliveryData.orderClient[i];
             zakazClients[g]++;
         }
-        return zakazClients;
-    }
-    /** Сколько клиентов сделали 2 и больше заказов за день. */
-    public static int repeatClients() {
         int sum=0;
-        for (int i:ordersPerClient()){
+        for (int i:zakazClients){
             if(i>1){
                 sum++;
             }
