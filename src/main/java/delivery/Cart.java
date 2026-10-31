@@ -9,8 +9,7 @@ public class Cart {
     /** Сумма корзины в копейках. Пустая корзина — 0. */
     public static int cartTotal(int[] cart) {
         int summa = 0;
-        for(int i = 0; i < cart.length; i++){
-            int dishIndex = cart[i];
+        for(int dishIndex : cart){
             summa += DeliveryData.dishPrices[dishIndex];
         }
         return summa;
@@ -69,7 +68,7 @@ public class Cart {
      * Считаем, что все блюда из одного ресторана — берём ресторан первого блюда.
      */
     public static boolean isMinOrderReached(int[] cart) {
-        if (cart.length == 0) {
+        if (cart == null || cart.length == 0) {
             return false;
         }
         int firstDish = cart[0];
@@ -81,7 +80,7 @@ public class Cart {
 
     /** Все ли блюда из одного ресторана. */
     public static boolean isSingleRestaurant(int[] cart) {
-        if (cart.length <= 1) {
+        if (cart == null || cart.length <= 1) {
             return true;
         }
         int firstDish = cart[0];
