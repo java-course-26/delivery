@@ -44,7 +44,19 @@ public class Cart {
         }
         return uniqueCount;
     }
+    public static int distinctCountFast(int[] cart) {
+        boolean[] visited = new boolean[20];
+        int uniqueCount = 0;
 
+        for (int dishIndex : cart) {
+            if (!visited[dishIndex]) {
+                visited[dishIndex] = true;
+                uniqueCount++;
+            }
+        }
+
+        return uniqueCount;
+    }
     /**
      * Набрана ли минимальная сумма заказа для ресторана.
      * Считаем, что все блюда из одного ресторана — берём ресторан первого блюда.
@@ -118,7 +130,6 @@ public class Cart {
         Check.eq("isMinOrderReached({0, 3})", isMinOrderReached(new int[]{0, 3}), false);
         Check.eq("isMinOrderReached({0, 0})", isMinOrderReached(new int[]{0, 0}), true);
         Check.eq("isMinOrderReached({})", isMinOrderReached(new int[]{}), false);
-
         Check.eq("isSingleRestaurant({0, 3, 2})", isSingleRestaurant(new int[]{0, 3, 2}), true);
         Check.eq("isSingleRestaurant({0, 4})", isSingleRestaurant(new int[]{0, 4}), false);
         Check.eq("mostExpensive({3, 9, 0})", mostExpensive(new int[]{3, 9, 0}), 9);
@@ -126,6 +137,7 @@ public class Cart {
         System.out.println("--- Интеграция ---");
         Check.eq("cartTotalByNames({Борщ, Морс клюквенный, Окрошка})",
                 cartTotalByNames(new String[]{"Борщ", "Морс клюквенный", "Окрошка"}), 40000);
+
         System.out.println("--- Крайние случаи ---");
         Check.eq("isMinOrderReached({16})", isMinOrderReached(new int[]{16}), false);
         Check.eq("isSingleRestaurant({})", isSingleRestaurant(new int[]{}), true);
@@ -134,5 +146,14 @@ public class Cart {
         Check.eq("mostExpensive({2, 13})", mostExpensive(new int[]{2, 13}), 2);
         Check.eq("cartTotal({18, 18})", cartTotal(new int[]{18, 18}), 32000);
 
+        System.out.println("--- пара 5 ---");
+        Check.eq("distinctCountFast({0,0,3,3,2})", distinctCountFast(new int[]{0, 0, 3, 3, 2}), 3);
+        Check.eq("distinctCountFast({})", distinctCountFast(new int[]{}), 0);
+        Check.eq("distinctCountFast({7})", distinctCountFast(new int[]{7}), 1);
+        for (int seed = 0; seed < 100; seed++) {
+            int[] data = BigData.randomArray(1000, 0, 1000, seed);
+
+
+        }
     }
 }
