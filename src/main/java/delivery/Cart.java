@@ -45,9 +45,8 @@ public class Cart {
         return uniqueCount;
     }
     public static int distinctCountFast(int[] cart) {
-        boolean[] visited = new boolean[20];
+        boolean[] visited = new boolean[1001];
         int uniqueCount = 0;
-
         for (int dishIndex : cart) {
             if (!visited[dishIndex]) {
                 visited[dishIndex] = true;
@@ -150,10 +149,21 @@ public class Cart {
         Check.eq("distinctCountFast({0,0,3,3,2})", distinctCountFast(new int[]{0, 0, 3, 3, 2}), 3);
         Check.eq("distinctCountFast({})", distinctCountFast(new int[]{}), 0);
         Check.eq("distinctCountFast({7})", distinctCountFast(new int[]{7}), 1);
-        for (int seed = 0; seed < 100; seed++) {
+
+        System.out.println("--- Тестирование быстрой версии ---");
+        int seed;
+        for (seed = 0; seed < 100; seed++) {
             int[] data = BigData.randomArray(1000, 0, 1000, seed);
-
-
+            int slowResult = distinctCount(data);
+            int fastResult = distinctCountFast(data);
+            if (slowResult != fastResult) {
+                System.out.println("FAIL! seed = " + seed);
+                break;
+            }
         }
+        if (seed == 100) {
+            System.out.println("OK!");
+        }
+
     }
 }
