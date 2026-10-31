@@ -45,7 +45,16 @@ public class Cart {
         return uniqueCount;
     }
     public static int distinctCountFast(int[] cart) {
-        boolean[] visited = new boolean[1001];
+        if (cart.length == 0) {
+            return 0;
+        }
+        int maxDishIndex = 0;
+        for (int dishIndex : cart) {
+            if (dishIndex > maxDishIndex) {
+                maxDishIndex = dishIndex;
+            }
+        }
+        boolean[] visited = new boolean[maxDishIndex + 1];
         int uniqueCount = 0;
         for (int dishIndex : cart) {
             if (!visited[dishIndex]) {
@@ -53,7 +62,6 @@ public class Cart {
                 uniqueCount++;
             }
         }
-
         return uniqueCount;
     }
     /**
