@@ -12,6 +12,9 @@ public class Delivery {
         return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
 
+
+
+
     /**
      * Стоимость доставки в копейках по расстоянию:
      * до 3 км включительно — 9900; дальше +2000 за каждый км сверх трёх;
@@ -82,7 +85,7 @@ public class Delivery {
     public static int maxDistance(int[] xs, int[] ys){
         int maxXY = 0;
         for (int i = 0; i < xs.length; i++) {
-            for (int j = i + 1; j < xs.length; j++) {
+            for (int j = i + 1; j < xs.length; j++){
                 int dist = Math.abs(xs[i] - xs[j]) + Math.abs(ys[i] - ys[j]);
                 if (dist > maxXY) {
                     maxXY = dist;
@@ -92,7 +95,24 @@ public class Delivery {
         return maxXY;
     }
 
-    public static void main(String[] args) {
+    public static int maxDistanceFast(int[]xs, int[]ys){
+        int maxXY = 0;
+        for (int i = 0; i < xs.length; i++) {
+            for (int j = i + 1; j < xs.length; j++) {
+                int a = Math.abs((xs[i] + ys[i]) - (xs[j] + ys[j]));
+                int b = Math.abs((xs[i] - ys[i]) - (xs[j] - ys[j]));
+                if (a > b) {
+                    maxXY = a;
+                }
+                 else {
+                    maxXY = b;
+                }
+            }
+        }
+        return maxXY;
+    }
+
+    public static void main(String[] args){
         Check.eq("distance(2, 3, 5, 7)", distance(2, 3, 5, 7), 7);
         Check.eq("distance(5, 7, 2, 3)", distance(5, 7, 2, 3), 7);
         Check.eq("distance(4, 4, 4, 4)", distance(4, 4, 4, 4), 0);
@@ -127,5 +147,19 @@ public class Delivery {
         Check.eq("maxDistance({0,3}, {0,4})", maxDistance(new int[]{0,3}, new int[]{0,4}), 7);
         Check.eq("maxDistance({}, {})", maxDistance(new int[]{}, new int[]{}), 0);
 
+        System.out.println("--Пара 5--");
+        Check.eq("maxDistanceFast(рестораны)", maxDistanceFast(DeliveryData.restaurantX, DeliveryData.restaurantY), 14);
+        Check.eq("MaxDistanceFast({0, 3}, {0, 4})", maxDistanceFast(new int[] {0,3}, new int[] {0,4}), 7);
+        Check.eq("maxDistanceFast({5}, {5}", maxDistanceFast(new int[] {5}, new int[] {5}), 0);
+        Check.eq("maxDistanceFast({}, {})", maxDistanceFast(new int[] {}, new int[] {}), 0);
+
+
+        for (int seed = 0; seed <= 99; seed++){
+            int[] xs = BigData.randomArray(1000, 0, 1000, seed);
+            int[] ys = BigData.randomArray(1000, 0, 1000, seed+1000);
+            if (maxDistance(xs, ys) != maxDistanceFast(xs, ys)){
+                System.out.println("FAIL" + seed);
+            }
+        }
     }
 }
