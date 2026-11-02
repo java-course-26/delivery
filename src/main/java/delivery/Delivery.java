@@ -96,20 +96,43 @@ public class Delivery {
     }
 
     public static int maxDistanceFast(int[]xs, int[]ys){
-        int maxXY = 0;
-        for (int i = 0; i < xs.length; i++) {
-            for (int j = i + 1; j < xs.length; j++) {
-                int a = Math.abs((xs[i] + ys[i]) - (xs[j] + ys[j]));
-                int b = Math.abs((xs[i] - ys[i]) - (xs[j] - ys[j]));
-                if (a > b) {
-                    maxXY = a;
-                }
-                 else {
-                    maxXY = b;
-                }
+        if (xs.length == 0){
+            return 0;
+        }
+
+        int maxPlus = xs[0] + ys[0];
+        int minPlus = xs[0] + ys[0];
+
+        int maxMinus = xs[0] - ys[0];
+        int minMinus = xs[0] - ys[0];
+
+        for (int i = 0; i < xs.length; i++){
+            int plus = xs[i] + ys[i];
+            int minus = xs[i] - ys[i];
+
+            if (plus > maxPlus){
+                maxPlus = plus;
+            }
+
+            if (plus < minPlus){
+                minPlus = plus;
+            }
+
+            if (minus < minMinus){
+                minMinus = minus;
+            }
+
+            if (minus > maxMinus) {
+                maxMinus = minus;
             }
         }
-        return maxXY;
+        int diffPlus = maxPlus - minPlus;
+        int diffMinus = maxMinus - minMinus;
+
+        if (diffPlus > diffMinus){
+            return diffPlus;
+        }
+        return diffMinus;
     }
 
     public static void main(String[] args){
