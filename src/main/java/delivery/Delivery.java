@@ -28,7 +28,8 @@ public class Delivery {
             return 9900 + ((distance - 3) * 2000);
         }
         else {
-            return -1;}
+            return -1;
+        }
     }
 
     /**
@@ -49,10 +50,8 @@ public class Delivery {
 
     /** Лежит ли точка внутри карты города: 0..10 по обеим координатам. */
     public static boolean isInCity(int x, int y) {
-        if (x >= 0 && y >= 0){
-            if (x <= 10 && y <= 10){
-                return true;
-            }
+        if (x >= 0 && y >= 0 && x <= 10 && y <= 10) {
+            return true;
         }
         return false;
     }
