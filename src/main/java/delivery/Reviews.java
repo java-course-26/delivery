@@ -121,6 +121,11 @@ public class Reviews {
         Check.eq("medianRating({4,5})",medianRating(new int[]{4,5}),4.5);
         Check.eq("medianRating({2,5,1,5})",medianRating(new int[]{2,5,1,5}),3.5);
         Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0);
+        Check.eq("new Review(0,5).is Positive()",new Review(0, 5).isPositive(),true);
+        Check.eq("new Review(1,4).is Positive()",new Review(1, 4).isPositive(),true);
+        Check.eq("new Review(3,2).is Positive()",new Review(3, 3).isPositive(),false);
+        Check.eq("new Review(3,2).is Positive()",new Review(3, 2).isPositive(),false);
+
 
         
     }
