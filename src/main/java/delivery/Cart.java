@@ -171,6 +171,10 @@ public class Cart {
         if (seed == 100) {
             System.out.println("OK!");
         }
-
+    System.out.println("---Классы---");
+    CartItem a = new CartItem(0,2);
+    Check.eq("new CartItem(0,2).total()", a.total(),68000);
+    Check.eq("new CartItem(3,1).total()", new CartItem(3,1).total(),9000);
+    Check.eq("new CartItem(5, 0).total()", new CartItem(5,0).total(),0);
     }
 }
