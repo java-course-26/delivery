@@ -173,5 +173,12 @@ public class Analytics {
                 System.out.println("FAIL"+ seed);
             }
         }
+        System.out.println("-- Классы --");
+        Check.eq("new OrderRecord(19,...).isEvening()", new OrderRecord(19,76000,1,2).isEvening(), true);
+        Check.eq("new OrderRecord(18,...).isEvening()", new OrderRecord(18,187000,5,1).isEvening(), true);
+        Check.eq("new OrderRecord(22,...).isEvening()", new OrderRecord(22,71000,10,0).isEvening(), true);
+        Check.eq("new OrderRecord(23,...).isEvening()", new OrderRecord(23,62000,11,2).isEvening(), false);
+        Check.eq("new OrderRecord(12,...).isEvening()", new OrderRecord(12,65000,0,0).isEvening(), false);
+
     }
 }
