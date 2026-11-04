@@ -183,5 +183,12 @@ public class Delivery {
                 System.out.println("FAIL" + seed);
             }
         }
+
+        System.out.println("---Классы---");
+        Point a = new Point(2,3);
+        Point b = new Point(5, 7);
+        Check.eq("a.distanceTo(b)", a.distanceTo(b), 7);
+        Check.eq("b.distanceTo(a)", b.distanceTo(a), 7);
+        Check.eq("a.distanceTo(a)", a.distanceTo(a), 0);
     }
 }
