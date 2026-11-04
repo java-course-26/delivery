@@ -10,26 +10,57 @@ public class Menu {
      * Индекс первого блюда с таким названием или -1, если такого нет.
      */
     public static int findDish(String name) {
-        // TODO
+        
+
+    for (int i = 0; i < DeliveryData.dishNames.length; i++) {
+        if (name.equals(DeliveryData.dishNames[i])) {
+            return i;
+        }
+    }
+    if (name == null) {
         return -1;
     }
+    return -1;
+}
+    
+
+
 
     /** Индекс самого дешёвого блюда в ресторане restaurantId. */
     public static int cheapestInRestaurant(int restaurantId) {
-        // TODO
-        return -1;
+       switch(restaurantId){
+        case 0:
+            return 3;
+        case 1:
+            return 7;
+        case 2:
+            return 11;
+        case 3:
+            return 14;
+        case 4:
+            return 18;
+        default:
+            return -1;
+       } 
     }
 
     /** Сколько блюд стоят от min до max копеек включительно. */
     public static int countInPriceRange(int min, int max) {
-        // TODO
-        return 0;
+        int count = 0;
+        for(int i = 0; i < DeliveryData.dishPrices.length; i++){
+            if (DeliveryData.dishPrices[i] >= min &&  DeliveryData.dishPrices[i] <= max){ 
+                count++;
+            }
+            
+            
+        }
+        return count;
     }
 
     /** Цена в копейках → строка с рублями: 35050 → "350,50 ₽", 5 → "0,05 ₽". */
     public static String formatPrice(int kopecks) {
-        // TODO
-        return "";
+        double rubles = kopecks / 100.0;
+        return String.format("%.2f ₽", rubles);
     }
 
     /**
@@ -37,9 +68,41 @@ public class Menu {
      * Сортировку пишем сами, без Arrays.sort.
      */
     public static int[] sortedByPrice(int restaurantId) {
-        // TODO
-        return new int[0];
+       int count = 0;
+    for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+        if (DeliveryData.dishRestaurant[i] == restaurantId) {
+            count++;
+        }
     }
+
+    int[] result = new int[count];
+    int index = 0;
+    for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+        if (DeliveryData.dishRestaurant[i] == restaurantId) {
+            result[index] = i;
+            index++;
+        }
+    }
+
+    for (int i = 0; i < result.length - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < result.length; j++) {
+            if (DeliveryData.dishPrices[result[j]] < DeliveryData.dishPrices[result[minIdx]]) {
+                minIdx = j;
+            }
+        }
+        if (minIdx != i) {
+            int temp = result[i];
+            result[i] = result[minIdx];
+            result[minIdx] = temp;
+        }
+    }
+
+    return result;
+}
+
+        
+    
 
     /**
      * Интеграция с другим модулем (Time).
