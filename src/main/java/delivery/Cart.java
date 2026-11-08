@@ -8,20 +8,41 @@ public class Cart {
 
     /** Сумма корзины в копейках. Пустая корзина — 0. */
     public static int cartTotal(int[] cart) {
-        // TODO
-        return 0;
+        int summa = 0;
+        for(int i = 0; i < cart.length; i++){
+            int dishIndex = cart[i];
+            summa += DeliveryData.dishPrices[dishIndex];
+        }
+        return summa;
     }
 
     /** Сколько раз блюдо dishIndex лежит в корзине. */
     public static int countOf(int[] cart, int dishIndex) {
-        // TODO
-        return 0;
+        int count = 0;
+        for (int i = 0; i < cart.length; i++) {
+            if (cart[i] == dishIndex) {
+                count++;
+            }
+        }
+        return count;
     }
 
     /** Сколько разных блюд в корзине: {0, 0, 3, 3, 2} → 3. */
     public static int distinctCount(int[] cart) {
-        // TODO
-        return 0;
+        int uniqueCount = 0;
+        for (int i = 0; i < cart.length; i++) {
+            boolean alreadySeen = false;
+            for (int j = 0; j < i; j++) {
+                if (cart[i] == cart[j]) {
+                    alreadySeen = true;
+                    break;
+                }
+            }
+            if (!alreadySeen) {
+                uniqueCount++;
+            }
+        }
+        return uniqueCount;
     }
 
     /**
@@ -29,20 +50,46 @@ public class Cart {
      * Считаем, что все блюда из одного ресторана — берём ресторан первого блюда.
      */
     public static boolean isMinOrderReached(int[] cart) {
-        // TODO
-        return false;
+        if (cart.length == 0) {
+            return false;
+        }
+        int firstDish = cart[0];
+        int restaurantIndex = DeliveryData.dishRestaurant[firstDish];
+        int minPrice = DeliveryData.restaurantMinOrder[restaurantIndex];
+        int total = cartTotal(cart);
+        return total >= minPrice;
     }
 
     /** Все ли блюда из одного ресторана. */
     public static boolean isSingleRestaurant(int[] cart) {
-        // TODO
-        return false;
+        if (cart.length <= 1) {
+            return true;
+        }
+        int firstDish = cart[0];
+        int firstRestaurant = DeliveryData.dishRestaurant[firstDish];
+        for (int i = 1; i < cart.length; i++) {
+            int currentDish = cart[i];
+            int currentRestaurant = DeliveryData.dishRestaurant[currentDish];
+            if (currentRestaurant != firstRestaurant) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /** Индекс самого дорогого блюда в корзине (именно индекс блюда, не позиция в корзине). */
     public static int mostExpensive(int[] cart) {
-        // TODO
-        return -1;
+        if (cart.length == 0) {
+            return -1;
+        }
+        int bestDish = cart[0];
+        for (int i = 1; i < cart.length; i++) {
+            int currentDish = cart[i];
+            if (DeliveryData.dishPrices[currentDish] > DeliveryData.dishPrices[bestDish]) {
+                bestDish = currentDish;
+            }
+        }
+        return bestDish;
     }
 
     /**
@@ -51,8 +98,14 @@ public class Cart {
      * Используй Menu.findDish(...) из модуля напарника.
      */
     public static int cartTotalByNames(String[] names) {
-        // TODO
-        return 0;
+        int totalSum = 0;
+        for (String name : names) {
+            int dishIndex = Menu.findDish(name);
+            if (dishIndex != -1) {
+                totalSum += DeliveryData.dishPrices[dishIndex];
+            }
+        }
+        return totalSum;
     }
 
     public static void main(String[] args) {
