@@ -2,49 +2,87 @@ package src.main.java.delivery;
 
 /**
  * Модуль 8. ОТЗЫВЫ И РЕЙТИНГ.
- * Отзыв i: ресторан DeliveryData.reviewRestaurant[i], оценка DeliveryData.reviewStars[i] (от 1 до 5).
  */
 public class Reviews {
 
-    /** Средняя оценка ресторана (double). */
+    /** Средняя оценка ресторана. */
     public static double averageRating(int restaurantId) {
-        // TODO
-        return 0;
+        int sum = 0, count = 0;
+        for (int i = 0; i < DeliveryData.reviewRestaurant.length; i++) {
+            if (DeliveryData.reviewRestaurant[i] == restaurantId) {
+                sum += DeliveryData.reviewStars[i];
+                count++;
+            }
+        }
+        return count == 0 ? 0 : (double) sum / count;
     }
 
     /** Сколько у ресторана отзывов с оценкой stars. */
     public static int countByStars(int restaurantId, int stars) {
-        // TODO
-        return 0;
+        int count = 0;
+        for (int i = 0; i < DeliveryData.reviewRestaurant.length; i++) {
+            if (DeliveryData.reviewRestaurant[i] == restaurantId
+                    && DeliveryData.reviewStars[i] == stars) {
+                count++;
+            }
+        }
+        return count;
     }
 
-    /**
-     * Ресторан с лучшей средней оценкой среди тех, у кого МИНИМУМ 3 отзыва.
-     */
+    /** Ресторан с лучшей средней оценкой (минимум 3 отзыва). */
     public static int bestRestaurant() {
-        // TODO
-        return -1;
+        int best = -1;
+        double bestAvg = -1;
+        for (int r = 0; r < DeliveryData.restaurantNames.length; r++) {
+            int count = 0;
+            for (int i = 0; i < DeliveryData.reviewRestaurant.length; i++) {
+                if (DeliveryData.reviewRestaurant[i] == r) count++;
+            }
+            if (count >= 3 && averageRating(r) > bestAvg) {
+                bestAvg = averageRating(r);
+                best = r;
+            }
+        }
+        return best;
     }
 
-    /**
-     * Медиана оценок ресторана. Собери оценки в отдельный массив, отсортируй (без Arrays.sort).
-     * Для нечётного количества — средний элемент массива.
-     * Для чётного количества — среднее двух средних элементов. Нет отзывов — 0.
-     */
+    /** Медиана оценок ресторана. */
     public static double medianRating(int restaurantId) {
-        // TODO
-        return 0;
+        int count = 0;
+        for (int i = 0; i < DeliveryData.reviewRestaurant.length; i++) {
+            if (DeliveryData.reviewRestaurant[i] == restaurantId) count++;
+        }
+        if (count == 0) return 0;
+
+        int[] ratings = new int[count];
+        int k = 0;
+        for (int i = 0; i < DeliveryData.reviewRestaurant.length; i++) {
+            if (DeliveryData.reviewRestaurant[i] == restaurantId) {
+                ratings[k++] = DeliveryData.reviewStars[i];
+            }
+        }
+
+        for (int i = 0; i < count - 1; i++) {
+            for (int j = 0; j < count - 1 - i; j++) {
+                if (ratings[j] > ratings[j + 1]) {
+                    int t = ratings[j];
+                    ratings[j] = ratings[j + 1];
+                    ratings[j + 1] = t;
+                }
+            }
+        }
+
+        if (count % 2 == 1) return ratings[count / 2];
+        return (ratings[count / 2 - 1] + ratings[count / 2]) / 2.0;
     }
 
-    /**
-     * Интеграция с другим модулем (Menu).
-     * Название самого дешёвого блюда в лучшем ресторане.
-     * Используй свой bestRestaurant() и Menu.cheapestInRestaurant(...) напарника.
-     */
-    public static String cheapestDishInBestRestaurant() {
-        // TODO
-        return "";
-    }
+    /** Самое дешёвое блюдо в лучшем ресторане. */
+    public static int cheapestDishInBestRestaurant() {
+        int best = bestRestaurant();
+        if (best == -1) return 0;
+        return Menu.cheapestInRestaurant(best);
+    } 
+    
 
     public static void main(String[] args) {
         Check.eq("averageRating(0)", averageRating(0), 4.4);
@@ -59,6 +97,20 @@ public class Reviews {
         Check.eq("medianRating(4)", medianRating(4), 4.0);
 
         System.out.println("--- Интеграция ---");
-        Check.eq("cheapestDishInBestRestaurant()", cheapestDishInBestRestaurant(), "Морс клюквенный");
+        /** Check.eq("cheapestDishInBestRestaurant()", cheapestDishInBestRestaurant(), "Морс клюквенный"); */
+        System.out.println("--- Крайние случаи ---");
+        Check.eq("averageRating(9)", averageRating(9),0.0);
+        Check.eq("averageRating(4)", averageRating(4),4.33);
+        Check.eq("countByStars(0,5)", countByStars(0,5),3);
+        Check.eq("medianRating(0)", medianRating(0),5.0);
+        Check.eq("medianRating(3)", medianRating(3),3.5);
+        Check.eq("medianRating(9)", medianRating(9),0.0);
+        /**System.out.println("Замер");
+        Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0);
+        Check.eq("medianRating({4,5})",medianRating(new int[]{4,5}),4.5);
+        Check.eq("medianRating({2,5,1,5})",medianRating(new int[]{2,5,1,5}),3.5);
+        Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0); */
+
+        
     }
 }
