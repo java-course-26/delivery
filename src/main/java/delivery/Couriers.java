@@ -5,6 +5,8 @@ package src.main.java.delivery;
  */
 public class Couriers {
 
+    public static long ops = 0;
+
     /** Сколько курьеров сейчас свободны. */
     public static int freeCount() {
         int counter = 0;
@@ -113,6 +115,7 @@ public class Couriers {
             for (int j=1;j<orders.length;j++){
                 if(i==j){continue;}
                 if (Math.abs(orders[i]-orders[j]) < minLoad){
+                    ops++;
                     minLoad = Math.abs(orders[i]-orders[j]);
                 }
             }
@@ -120,7 +123,25 @@ public class Couriers {
         return minLoad;
     }
 
+    public static void bench(){
+        int[] sizes = {10,100,1000,10000};
+        for(int n : sizes){
+            int[] data = BigData.randomArray(n,0,1000000,42);
+            ops=0;
+            minloadGap(data);
+            System.out.println(n + "\t" + ops);
+        }
+    }
+
     public static void main(String[] args) {
+
+        System.out.println("--Классы--");
+        Check.eq("Гарик, 7 заказов",new Courier("Гарик",3,3,false,7).earnings(),105000);
+        Check.eq("Гульпихнур, 12 заказов",new Courier("Гульпихнур",7,2,true,12).earnings(),230000);
+        Check.eq("Диса, 3 заказов",new Courier("Диса",9,9,true,3).earnings(),45000);
+        Check.eq("Ровно 10 заказов",new Courier("Новый",0,0,false,10).earnings(),200000);
+
+
         Check.eq("freeCount()", freeCount(), 4);
         Check.eq("leastLoadedFree()", leastLoadedFree(), 2);
         Check.eq("earnings(1)", earnings(1), 230000);
@@ -146,5 +167,7 @@ public class Couriers {
         Check.eq("minLoadGap(заказы курьеров)",minloadGap(DeliveryData.courierOrdersToday),1);
         Check.eq("minLoadGap({10,4})",minloadGap(new int[]{10,4}),6);
         Check.eq("minLoadGap({5})",minloadGap(new int[]{5}),-1);
+
+        bench();
     }
 }
