@@ -1,4 +1,5 @@
 package src.main.java.delivery;
+import java.util.Arrays;
 /**
  * Модуль 6. КУРЬЕРЫ.
  * Данные — DeliveryData.courierNames, courierX, courierY, courierBusy, courierOrdersToday.
@@ -108,19 +109,37 @@ public class Couriers {
         return index_courier;
     }
 
-    public static int minloadGap(int[] orders){
-        if (orders.length < 2){return -1;}
+    public static int minLoadGap(int[] orders) {
+        if (orders.length < 2) {
+            return -1;
+        }
         int minLoad = Integer.MAX_VALUE;
-        for (int i=0;i<orders.length-1;i++){
-            for (int j=1;j<orders.length;j++){
-                if(i==j){continue;}
-                if (Math.abs(orders[i]-orders[j]) < minLoad){
-                    ops++;
-                    minLoad = Math.abs(orders[i]-orders[j]);
+        for (int i = 0; i < orders.length - 1; i++) {
+            for (int j = i + 1; j < orders.length; j++) {
+                int diff = Math.abs(orders[i] - orders[j]);
+                if (diff < minLoad) {
+                    minLoad = diff;
                 }
             }
         }
         return minLoad;
+    }
+
+    public static int minLoadGapFast(int[] orders) {
+        if (orders.length < 2) {
+            return -1;
+        }
+        int[] sorted = orders.clone();
+        Arrays.sort(sorted);
+
+        int minGap = Integer.MAX_VALUE;
+        for (int i = 0; i < sorted.length - 1; i++) {
+            int diff = sorted[i + 1] - sorted[i];
+            if (diff < minGap) {
+                minGap = diff;
+            }
+        }
+        return minGap;
     }
 
     public static void bench(){
@@ -128,7 +147,7 @@ public class Couriers {
         for(int n : sizes){
             int[] data = BigData.randomArray(n,0,1000000,42);
             ops=0;
-            minloadGap(data);
+            minLoadGap(data);
             System.out.println(n + "\t" + ops);
         }
     }
@@ -164,10 +183,10 @@ public class Couriers {
         Check.eq("nearestFree(9,9)",nearestFree(9,9),2);
 
         System.out.println("---Замер---");
-        Check.eq("minLoadGap(заказы курьеров)",minloadGap(DeliveryData.courierOrdersToday),1);
-        Check.eq("minLoadGap({10,4})",minloadGap(new int[]{10,4}),6);
-        Check.eq("minLoadGap({5})",minloadGap(new int[]{5}),-1);
-
+        Check.eq("minLoadGap(заказы курьеров)",minLoadGap(DeliveryData.courierOrdersToday),1);
+        Check.eq("minLoadGapFAST({10,4})",minLoadGapFast(new int[]{10,4}),6);
+        Check.eq("minLoadGap({5})",minLoadGap(new int[]{5}),-1);
+        Check.eq("minLoadGap([])", minLoadGap(new int[]{}), -1);
         bench();
     }
 }
