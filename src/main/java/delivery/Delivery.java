@@ -141,7 +141,13 @@ public class Delivery {
             int y = DeliveryData.restaurantY[i];
             points[i] = new Point(x, y);
         }
+        return points;
     }
+
+    public static int deliveryCost(Point from, Point to){
+        return deliveryCost(from.distanceTo(to));
+    }
+
 
 
 
