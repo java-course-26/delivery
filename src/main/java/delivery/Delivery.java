@@ -190,5 +190,15 @@ public class Delivery {
         Check.eq("a.distanceTo(b)", a.distanceTo(b), 7);
         Check.eq("b.distanceTo(a)", b.distanceTo(a), 7);
         Check.eq("a.distanceTo(a)", a.distanceTo(a), 0);
+
+
+        System.out.println("---Методы класса---");
+        Check.eq("new Point(10, 0).isInCity()", new Point(10, 0).isInCity(), true);
+        Check.eq("new Point(11, 5).isInCity()", new Point(11, 5).isInCity(), false);
+        Point p = new Point(2, 3);
+        Point q = new Point(2, 3);
+        Check.eq("p.sameAs(q)", p.sameAs(q), true);
+        Check.eq("p.sameAs(new Point(3, 2))", p.sameAs(new Point(3, 2)),false);
+
     }
 }
