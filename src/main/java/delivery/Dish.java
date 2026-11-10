@@ -20,10 +20,16 @@ public Dish(String name, int price, int restaurantId, int category, int cookMinu
 
     
 public boolean isCheaperThan(Dish other){
-    if(price < other.price ){
+    return price < other.price;
+    
+}
+public boolean isDrink(){
+    if(category == 3){
         return true;
     }
     return false;
-    
+}
+public void discount(int percent){
+    price -= price * (percent / 100.0);
 }
 }

@@ -16,7 +16,7 @@ public class Menu {
         if(name == null){
             return -1;
         }
-    for (int i = 0; i < DeliveryData.dishNames.length - 1; i++) {
+    for (int i = 0; i < DeliveryData.dishNames.length; i++) {
         if (name.equals(DeliveryData.dishNames[i])) {
             return i;
         }
@@ -173,7 +173,11 @@ public class Menu {
         Dish mors = new Dish("Морс клюквенный",9000,0,3,2);
         Check.eq("mors.isCheaperThan(borsch)",mors.isCheaperThan(borsch),true);
         Check.eq("borsch.isCheaperThan(mors)",borsch.isCheaperThan(mors),false);
-        Check.eq("borsch.isCheaperThan(borsch)",borsch.isCheaperThan(borsch),false);        
-
+        Check.eq("borsch.isCheaperThan(borsch)",borsch.isCheaperThan(borsch),false);  
+        System.out.println("---Методы класса---");
+        Check.eq("морс - напиток", new Dish("Морс клюквенный",9000,0,3,2).isDrink(),true);      
+        Check.eq("борщ - не напиток", new Dish("Борщ", 31000,0,1,10).isDrink(),false);
+        borsch.discount(10);
+        Check.eq("после borsch.discount(10): borsch.price",borsch.price,27900);
     }
 }
