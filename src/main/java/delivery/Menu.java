@@ -123,7 +123,20 @@ public class Menu {
         }
         return -1;
     }
-
+    public static boolean hasSamePrices(int[] prices){
+        for(int i = 0; i < prices.length; i++){
+            int temp = prices[i];
+            for(int j = 0; j < prices.length; j++){
+                
+                if(temp == prices[j] && i != j){
+                    
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
     public static void main(String[] args) {
         Check.eq("findDish(\"Борщ\")", findDish("Борщ"), 2);
         Check.eq("findDish(\"Лимонад\")", findDish("Лимонад"), 11);
@@ -152,7 +165,15 @@ public class Menu {
         Check.eq("formatPrice(0)", formatPrice(0), "0,00 ₽");
         Check.eq("formatPrice(123456)", formatPrice(123456), "1234,56 ₽");
         Check.eq("sortedByPrice(9)", sortedByPrice(9), new int[]{});
-     
+        System.out.println("---Замер---");
+        Check.eq("hasSamePrices(все цены меню)", hasSamePrices(DeliveryData.dishPrices),false);
+        
+        System.out.println("---Классы---");
+        Dish borsch = new Dish("Борщ", 31000,0,1,10);
+        Dish mors = new Dish("Морс клюквенный",9000,0,3,2);
+        Check.eq("mors.isCheaperThan(borsch)",mors.isCheaperThan(borsch),true);
+        Check.eq("borsch.isCheaperThan(mors)",borsch.isCheaperThan(mors),false);
+        Check.eq("borsch.isCheaperThan(borsch)",borsch.isCheaperThan(borsch),false);        
 
     }
 }
