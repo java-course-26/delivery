@@ -134,6 +134,17 @@ public class Delivery {
         return diffMinus;
     }
 
+    public static Point[] loadRestaurants(){
+        Point[] points = new Point[DeliveryData.restaurantX.length];
+        for (int i = 0; i < DeliveryData.restaurantX.length; i++){
+            int x = DeliveryData.restaurantX[i];
+            int y = DeliveryData.restaurantY[i];
+            points[i] = new Point(x, y);
+        }
+    }
+
+
+
     public static void main(String[] args){
         Check.eq("distance(2, 3, 5, 7)", distance(2, 3, 5, 7), 7);
         Check.eq("distance(5, 7, 2, 3)", distance(5, 7, 2, 3), 7);

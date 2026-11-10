@@ -25,3 +25,5 @@ public class Point {
         return Delivery.distance(x, y, other.x, other.y);
     }
 }
+
+
