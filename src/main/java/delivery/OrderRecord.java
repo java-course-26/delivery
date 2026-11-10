@@ -14,4 +14,11 @@ public class OrderRecord {
     public boolean isEvening(){
         return (18 <= hour && hour<= 22);
     }
+    public boolean isBig(){
+        return (total >=100000);
+    }
+    public boolean sameClient(OrderRecord comparativeOrderRecord){
+        int comparativeClientId = comparativeOrderRecord.clientId;
+        return (clientId == comparativeClientId);//класс это как тип данных(типа инт)
+    }
 }

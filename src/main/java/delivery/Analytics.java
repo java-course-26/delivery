@@ -179,6 +179,14 @@ public class Analytics {
         Check.eq("new OrderRecord(22,...).isEvening()", new OrderRecord(22,71000,10,0).isEvening(), true);
         Check.eq("new OrderRecord(23,...).isEvening()", new OrderRecord(23,62000,11,2).isEvening(), false);
         Check.eq("new OrderRecord(12,...).isEvening()", new OrderRecord(12,65000,0,0).isEvening(), false);
+        System.out.println("-- Методы класса --");
+        OrderRecord big= new OrderRecord(19,142000,2,1);
+        OrderRecord small= new OrderRecord(13,45000,2,3);
+        Check.eq("big.isBig()", big.isBig(),true);
+        Check.eq("small.isBig()", small.isBig(),false);
+        Check.eq("ровно 1000р",new OrderRecord(12,100000,0,0).isBig(),true);
+        Check.eq("big.sameClient(small)",big.sameClient(small),true);
+        Check.eq("лругой клиент",big.sameClient(new OrderRecord(19,142000,7,1)),false);
 
     }
 }
