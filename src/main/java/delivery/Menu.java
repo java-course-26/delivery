@@ -1,5 +1,7 @@
 package src.main.java.delivery;
 
+import java.util.Locale;
+
 /**
  * Модуль 1. МЕНЮ — поиск блюд и цены.
  * Все данные о блюдах — в DeliveryData (dishNames, dishPrices, dishRestaurant ...).
@@ -10,26 +12,55 @@ public class Menu {
      * Индекс первого блюда с таким названием или -1, если такого нет.
      */
     public static int findDish(String name) {
-        // TODO
-        return -1;
+        
+        if(name == null){
+            return -1;
+        }
+    for (int i = 0; i < DeliveryData.dishNames.length - 1; i++) {
+        if (name.equals(DeliveryData.dishNames[i])) {
+            return i;
+        }
     }
+    
+    return -1;
+}
+    
+
+
 
     /** Индекс самого дешёвого блюда в ресторане restaurantId. */
     public static int cheapestInRestaurant(int restaurantId) {
-        // TODO
-        return -1;
+        int minPrice = Integer.MAX_VALUE;
+        int cheapestIndex = -1;
+
+        for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+            if (DeliveryData.dishRestaurant[i] == restaurantId) {
+                if (DeliveryData.dishPrices[i] < minPrice) {
+                    minPrice = DeliveryData.dishPrices[i];
+                    cheapestIndex = i;
+                }
+            }
+        }
+        return cheapestIndex;
     }
 
     /** Сколько блюд стоят от min до max копеек включительно. */
     public static int countInPriceRange(int min, int max) {
-        // TODO
-        return 0;
+        int count = 0;
+        for(int i = 0; i < DeliveryData.dishPrices.length; i++){
+            if (DeliveryData.dishPrices[i] >= min &&  DeliveryData.dishPrices[i] <= max){ 
+                count++;
+            }
+            
+            
+        }
+        return count;
     }
 
     /** Цена в копейках → строка с рублями: 35050 → "350,50 ₽", 5 → "0,05 ₽". */
     public static String formatPrice(int kopecks) {
-        // TODO
-        return "";
+        double rubles = kopecks / 100.0;
+        return String.format(Locale.FRANCE,"%.2f ₽", rubles);
     }
 
     /**
@@ -37,9 +68,41 @@ public class Menu {
      * Сортировку пишем сами, без Arrays.sort.
      */
     public static int[] sortedByPrice(int restaurantId) {
-        // TODO
-        return new int[0];
+       int count = 0;
+    for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+        if (DeliveryData.dishRestaurant[i] == restaurantId) {
+            count++;
+        }
     }
+
+    int[] result = new int[count];
+    int index = 0;
+    for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+        if (DeliveryData.dishRestaurant[i] == restaurantId) {
+            result[index] = i;
+            index++;
+        }
+    }
+
+    for (int i = 0; i < result.length - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < result.length; j++) {
+            if (DeliveryData.dishPrices[result[j]] < DeliveryData.dishPrices[result[minIdx]]) {
+                minIdx = j;
+            }
+        }
+        if (minIdx != i) {
+            int temp = result[i];
+            result[i] = result[minIdx];
+            result[minIdx] = temp;
+        }
+    }
+
+    return result;
+}
+
+        
+    
 
     /**
      * Интеграция с другим модулем (Time).
@@ -47,10 +110,33 @@ public class Menu {
      * Используй Time.isOpen(...) из модуля напарника. Если ничего не нашлось — -1.
      */
     public static int findOpenDish(String name, int minute) {
-        // TODO
+        if(name == null){
+            return -1;
+        }
+        for(int i = 0; i < DeliveryData.dishNames.length; i ++){
+            if(name.equals(DeliveryData.dishNames[i])){
+                int restaurantId = DeliveryData.dishRestaurant[i];
+                if(Time.isOpen(restaurantId, minute)){
+                    return i;
+                }
+            }
+        }
         return -1;
     }
-
+    public static boolean hasSamePrices(int[] prices){
+        for(int i = 0; i < prices.length; i++){
+            int temp = prices[i];
+            for(int j = 0; j < prices.length; j++){
+                
+                if(temp == prices[j] && i != j){
+                    
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
     public static void main(String[] args) {
         Check.eq("findDish(\"Борщ\")", findDish("Борщ"), 2);
         Check.eq("findDish(\"Лимонад\")", findDish("Лимонад"), 11);
@@ -71,5 +157,23 @@ public class Menu {
         Check.eq("findOpenDish(\"Лимонад\", 1260)", findOpenDish("Лимонад", 1260), 11);
         Check.eq("findOpenDish(\"Лимонад\", 540)", findOpenDish("Лимонад", 540), 18);
         Check.eq("findOpenDish(\"Тирамису\", 180)", findOpenDish("Тирамису", 180), -1);
+        System.out.println("---Крайние случаи---");
+        Check.eq("findDish(null)", findDish(null), -1);
+        Check.eq("findDish(\"борщ\")", findDish("борщ"), -1);
+        Check.eq("cheapestInRestaurant(-1)", cheapestInRestaurant(-1), -1);
+        Check.eq("countInPriceRange(50000, 10000)", countInPriceRange(50000, 10000), 0);
+        Check.eq("formatPrice(0)", formatPrice(0), "0,00 ₽");
+        Check.eq("formatPrice(123456)", formatPrice(123456), "1234,56 ₽");
+        Check.eq("sortedByPrice(9)", sortedByPrice(9), new int[]{});
+        System.out.println("---Замер---");
+        Check.eq("hasSamePrices(все цены меню)", hasSamePrices(DeliveryData.dishPrices),false);
+        
+        System.out.println("---Классы---");
+        Dish borsch = new Dish("Борщ", 31000,0,1,10);
+        Dish mors = new Dish("Морс клюквенный",9000,0,3,2);
+        Check.eq("mors.isCheaperThan(borsch)",mors.isCheaperThan(borsch),true);
+        Check.eq("borsch.isCheaperThan(mors)",borsch.isCheaperThan(mors),false);
+        Check.eq("borsch.isCheaperThan(borsch)",borsch.isCheaperThan(borsch),false);        
+
     }
 }

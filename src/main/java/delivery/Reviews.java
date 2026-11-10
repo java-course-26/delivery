@@ -8,13 +8,13 @@ public class Reviews {
 
     /** Средняя оценка ресторана (double). */
     public static double averageRating(int restaurantId) {
-        // TODO
+        // 
         return 0;
     }
 
     /** Сколько у ресторана отзывов с оценкой stars. */
     public static int countByStars(int restaurantId, int stars) {
-        // TODO
+        // 
         return 0;
     }
 
@@ -22,7 +22,7 @@ public class Reviews {
      * Ресторан с лучшей средней оценкой среди тех, у кого МИНИМУМ 3 отзыва.
      */
     public static int bestRestaurant() {
-        // TODO
+        // 
         return -1;
     }
 
@@ -32,7 +32,7 @@ public class Reviews {
      * Для чётного количества — среднее двух средних элементов. Нет отзывов — 0.
      */
     public static double medianRating(int restaurantId) {
-        // TODO
+        // 
         return 0;
     }
 
@@ -42,7 +42,7 @@ public class Reviews {
      * Используй свой bestRestaurant() и Menu.cheapestInRestaurant(...) напарника.
      */
     public static String cheapestDishInBestRestaurant() {
-        // TODO
+        // 
         return "";
     }
 
