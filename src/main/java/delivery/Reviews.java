@@ -6,6 +6,9 @@ import java.util.Arrays;
  * Модуль 8. ОТЗЫВЫ И РЕЙТИНГ.
  */
 public class Reviews {
+    public static Review[] loadReviews() 
+
+
 
     /** Средняя оценка ресторана. */
     public static double averageRating(int restaurantId) {
@@ -17,6 +20,17 @@ public class Reviews {
             }
         }
         return count == 0 ? 0 : (double) sum / count;
+    }
+    public static double averageRating(Review[] reviews,int restaurantId) {
+        int sum = 0, count = 0;
+        for (int i = 0; i < reviews.length; i++) {
+            if (reviews[i].restaurantId ) {
+
+            }
+
+        }
+
+        
     }
 
     /** Сколько у ресторана отзывов с оценкой stars. */
@@ -126,6 +140,17 @@ public class Reviews {
         Check.eq("new Review(1,4).is Positive()",new Review(1, 4).isPositive(),true);
         Check.eq("new Review(3,2).is Positive()",new Review(3, 3).isPositive(),false);
         Check.eq("new Review(3,2).is Positive()",new Review(3, 2).isPositive(),false);
+        System.out.println("---Методы класса---");
+        Check.eq("new Review(0,1).is Negative()",new Review(0, 1).isNegative(),true);
+        Check.eq("new Review(0,2).is Negative()",new Review(0, 2).isNegative(),true);
+        Check.eq("new Review(0,3).is Negative()",new Review(0, 3).isNegative(),false);
+        Review a = new Review(2,5);
+        Check.eq("a.sameRestaurant(new Review(2,1))",a.sameRestaurant(new Review(2, 1)),true);
+        Check.eq("a.sameRestaurant(new Review(3,5))",a.sameRestaurant(new Review(3, 5)),false);
+
+
+
+
 
 
         

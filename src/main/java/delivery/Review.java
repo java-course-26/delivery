@@ -17,4 +17,15 @@ public class Review {
         
     }
 
+    public boolean isNegative() {
+        return stars<3;
+        
+        
+    }
+    public boolean sameRestaurant(Review other) {
+
+        return (restaurantId == other.restaurantId);
+
+    }
+
 }
