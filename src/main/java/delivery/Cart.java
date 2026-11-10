@@ -176,5 +176,12 @@ public class Cart {
     Check.eq("new CartItem(0,2).total()", a.total(),68000);
     Check.eq("new CartItem(3,1).total()", new CartItem(3,1).total(),9000);
     Check.eq("new CartItem(5, 0).total()", new CartItem(5,0).total(),0);
+
+    System.out.println("---Методы класса---");
+    CartItem c = new CartItem(3,1);
+    Check.eq("c.name()", c.name(),"Морс клюквенный");
+    c.add(2);
+    Check.eq("после c.add(2):c.quantity", c.quantity,3);
+    Check.eq("после c.add(2):c.total", c.total(),27000);
     }
 }

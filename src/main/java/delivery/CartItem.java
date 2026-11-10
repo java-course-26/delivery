@@ -11,4 +11,11 @@ public class CartItem {
     public int total(){
         return DeliveryData.dishPrices[dishIndex] * quantity;
     }
+    public String name(){
+        return DeliveryData.dishNames[dishIndex];
+    }
+
+    public void add(int count){
+        this.quantity += count;
+    }
 }
