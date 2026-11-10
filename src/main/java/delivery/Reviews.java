@@ -88,10 +88,11 @@ public class Reviews {
     }
 
     /** Самое дешёвое блюдо в лучшем ресторане. */
-    public static int cheapestDishInBestRestaurant() {
+    public static String cheapestDishInBestRestaurant() {
         int best = bestRestaurant();
-        if (best == -1) return 0;
-        return Menu.cheapestInRestaurant(best);
+        if (best == -1) return "0";
+        int chp = Menu.cheapestInRestaurant(best);
+        return DeliveryData.dishNames[chp];
     } 
     
 
@@ -108,7 +109,7 @@ public class Reviews {
         Check.eq("medianRating(4)", medianRating(4), 4.0);
 
         System.out.println("--- Интеграция ---");
-        /** Check.eq("cheapestDishInBestRestaurant()", cheapestDishInBestRestaurant(), "Морс клюквенный"); */
+        Check.eq("cheapestDishInBestRestaurant()", cheapestDishInBestRestaurant(), "Морс клюквенный");
         System.out.println("--- Крайние случаи ---");
         Check.eq("averageRating(9)", averageRating(9),0.0);
         Check.eq("averageRating(4)", averageRating(4),4.33);
