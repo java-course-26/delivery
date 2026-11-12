@@ -164,6 +164,10 @@ public class Delivery {
         return index;
     }
 
+    public static void shiftRight(Point p){
+        p.x = p.x + 1;
+    }
+
 
     public static void main(String[] args){
         Check.eq("distance(2, 3, 5, 7)", distance(2, 3, 5, 7), 7);
@@ -241,6 +245,24 @@ public class Delivery {
         Check.eq("nearestRestaurant(rs, new Point(7, 1))", nearestRestaurant(rs, new Point(7, 1)), 1);
         Check.eq("nearestRestaurant(rs, new Point(0, 9))", nearestRestaurant(rs, new Point(0, 9)), 3);
         Check.eq("nearestRestaurant(new Point[0], ...)", nearestRestaurant(new Point[0], new Point(0, 0)), -1);
+
+        Point A = new Point(2, 3);
+        Point B = A;
+        B.x = 10;
+        System.out.println(A.x);
+
+        Point V = new Point(2, 3);
+        System.out.println(A == V);
+        System.out.println(A == B);
+
+        Point[] M = new Point[3];
+        M[0] = A;
+        System.out.println(M[0].x);
+        System.out.println(M[1]);
+
+        shiftRight(A);
+        System.out.println(A.x);
+
 
     }
 }
