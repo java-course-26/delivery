@@ -9,9 +9,11 @@ public class Delivery {
 
     /** Манхэттенское расстояние между точками. */
     public static int distance(int x1, int y1, int x2, int y2) {
-        // TODO
-        return 0;
+        return Math.abs(x1 - x2) + Math.abs(y1 - y2);
     }
+
+
+
 
     /**
      * Стоимость доставки в копейках по расстоянию:
@@ -19,21 +21,38 @@ public class Delivery {
      * больше 10 км — не доставляем, вернуть -1.
      */
     public static int deliveryCost(int distance) {
-        // TODO
-        return 0;
+        if (distance <= 3){
+            return 9900;
+        }
+        else if (distance <= 10){
+            return 9900 + ((distance - 3) * 2000);
+        }
+        else {
+            return -1;
+        }
     }
 
     /**
      * Ночная надбавка: с 23:00 до 06:00 (minute >= 1380 или minute < 360) цена растёт на 30%.
      */
     public static int nightPrice(int cost, int minute) {
-        // TODO
-        return 0;
+        if (cost == -1){
+            return -1;
+        }
+        if (minute > 1440){
+            minute = minute % 1440;
+        }
+        if (minute >= 1380 || minute < 360) {
+            return (int) Math.round((double) cost * 1.3);
+        }
+        return cost;
     }
 
     /** Лежит ли точка внутри карты города: 0..10 по обеим координатам. */
     public static boolean isInCity(int x, int y) {
-        // TODO
+        if (x >= 0 && y >= 0 && x <= 10 && y <= 10) {
+            return true;
+        }
         return false;
     }
 
@@ -44,11 +63,113 @@ public class Delivery {
      * Иначе: расстояние от ресторана → deliveryCost → nightPrice.
      */
     public static int deliveryCostForCart(int[] cart, int restaurantId, int x, int y, int minute) {
-        // TODO
-        return 0;
+        if (Cart.cartTotal(cart) >= 150000){
+            return 0;
+        }
+
+
+
+        int rx = DeliveryData.restaurantX[restaurantId];
+        int ry = DeliveryData.restaurantY[restaurantId];
+
+        int dist = distance(rx, ry, x, y);
+
+        int cost = deliveryCost(dist);
+        if (cost == -1){
+            return -1;
+        }
+        return nightPrice(cost, minute);
     }
 
-    public static void main(String[] args) {
+    public static int maxDistance(int[] xs, int[] ys){
+        int maxXY = 0;
+        for (int i = 0; i < xs.length; i++) {
+            for (int j = i + 1; j < xs.length; j++){
+                int dist = Math.abs(xs[i] - xs[j]) + Math.abs(ys[i] - ys[j]);
+                if (dist > maxXY) {
+                    maxXY = dist;
+                }
+            }
+        }
+        return maxXY;
+    }
+
+    public static int maxDistanceFast(int[]xs, int[]ys){
+        if (xs.length == 0){
+            return 0;
+        }
+
+        int maxPlus = xs[0] + ys[0];
+        int minPlus = xs[0] + ys[0];
+
+        int maxMinus = xs[0] - ys[0];
+        int minMinus = xs[0] - ys[0];
+
+        for (int i = 0; i < xs.length; i++){
+            int plus = xs[i] + ys[i];
+            int minus = xs[i] - ys[i];
+
+            if (plus > maxPlus){
+                maxPlus = plus;
+            }
+
+            if (plus < minPlus){
+                minPlus = plus;
+            }
+
+            if (minus < minMinus){
+                minMinus = minus;
+            }
+
+            if (minus > maxMinus) {
+                maxMinus = minus;
+            }
+        }
+        int diffPlus = maxPlus - minPlus;
+        int diffMinus = maxMinus - minMinus;
+
+        if (diffPlus > diffMinus){
+            return diffPlus;
+        }
+        return diffMinus;
+    }
+
+    public static Point[] loadRestaurants(){
+        Point[] points = new Point[DeliveryData.restaurantX.length];
+        for (int i = 0; i < DeliveryData.restaurantX.length; i++){
+            int x = DeliveryData.restaurantX[i];
+            int y = DeliveryData.restaurantY[i];
+            points[i] = new Point(x, y);
+        }
+        return points;
+    }
+
+    public static int deliveryCost(Point from, Point to){
+        return deliveryCost(from.distanceTo(to));
+    }
+
+    public static int nearestRestaurant(Point[] restaurants, Point p){
+        int minDist = 10000;
+        if (restaurants.length == 0){
+            return -1;
+        }
+        int index = 0;
+        for (int i = 0; i < restaurants.length; i++){
+            int dist = restaurants[i].distanceTo(p);
+            if (dist < minDist){
+                minDist = dist;
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    public static void shiftRight(Point p){
+        p.x = p.x + 1;
+    }
+
+
+    public static void main(String[] args){
         Check.eq("distance(2, 3, 5, 7)", distance(2, 3, 5, 7), 7);
         Check.eq("distance(5, 7, 2, 3)", distance(5, 7, 2, 3), 7);
         Check.eq("distance(4, 4, 4, 4)", distance(4, 4, 4, 4), 0);
@@ -60,6 +181,7 @@ public class Delivery {
         Check.eq("nightPrice(9900, 720)", nightPrice(9900, 720), 9900);
         Check.eq("nightPrice(9900, 360)", nightPrice(9900, 360), 9900);
         Check.eq("nightPrice(-1, 1400)", nightPrice(-1, 1400), -1);
+        Check.eq("nightPrice(1000, 1740)", nightPrice(1000, 1740), 1300);
 
         Check.eq("isInCity(10, 0)", isInCity(10, 0), true);
         Check.eq("isInCity(11, 5)", isInCity(11, 5), false);
@@ -68,5 +190,79 @@ public class Delivery {
         System.out.println("--- Интеграция ---");
         Check.eq("deliveryCostForCart({8}, 2, 1, 1, 1410)", deliveryCostForCart(new int[]{8}, 2, 1, 1, 1410), 28470);
         Check.eq("deliveryCostForCart({9, 9, 8}, 2, 1, 1, 1410)", deliveryCostForCart(new int[]{9, 9, 8}, 2, 1, 1, 1410), 0);
+
+        System.out.println("--- Крайние случаи ---");
+        Check.eq("nightPrice(9900, 2000)", nightPrice(9900, 2000), 9900);
+        Check.eq("nightPrice(10000, 1800)", nightPrice(10000, 1800), 10000);
+        Check.eq("deliveryCostForCart({0},0,2,3,2000)", deliveryCostForCart(new int[]{0},0,2,3,2000),9900);
+        Check.eq("nightPrice(10000, 1380)", nightPrice(10000, 1380), 13000);
+        Check.eq("nightPrice(10000, 360)", nightPrice(10000, 360), 10000);
+        Check.eq("deliveryCost(10)", deliveryCost(10), 23900);
+
+        System.out.println("--- Замер ---");
+        Check.eq("maxDistance(рестораны)", maxDistance(DeliveryData.restaurantX, DeliveryData.restaurantY), 14);
+        Check.eq("maxDistance({0,3}, {0,4})", maxDistance(new int[]{0,3}, new int[]{0,4}), 7);
+        Check.eq("maxDistance({}, {})", maxDistance(new int[]{}, new int[]{}), 0);
+
+        System.out.println("--Пара 5--");
+        Check.eq("maxDistanceFast(рестораны)", maxDistanceFast(DeliveryData.restaurantX, DeliveryData.restaurantY), 14);
+        Check.eq("MaxDistanceFast({0, 3}, {0, 4})", maxDistanceFast(new int[] {0,3}, new int[] {0,4}), 7);
+        Check.eq("maxDistanceFast({5}, {5}", maxDistanceFast(new int[] {5}, new int[] {5}), 0);
+        Check.eq("maxDistanceFast({}, {})", maxDistanceFast(new int[] {}, new int[] {}), 0);
+
+
+        for (int seed = 0; seed <= 99; seed++){
+            int[] xs = BigData.randomArray(1000, 0, 1000, seed);
+            int[] ys = BigData.randomArray(1000, 0, 1000, seed+1000);
+            if (maxDistance(xs, ys) != maxDistanceFast(xs, ys)){
+                System.out.println("FAIL" + seed);
+            }
+        }
+
+        System.out.println("---Классы---");
+        Point a = new Point(2,3);
+        Point b = new Point(5, 7);
+        Check.eq("a.distanceTo(b)", a.distanceTo(b), 7);
+        Check.eq("b.distanceTo(a)", b.distanceTo(a), 7);
+        Check.eq("a.distanceTo(a)", a.distanceTo(a), 0);
+
+
+        System.out.println("---Методы класса---");
+        Check.eq("new Point(10, 0).isInCity()", new Point(10, 0).isInCity(), true);
+        Check.eq("new Point(11, 5).isInCity()", new Point(11, 5).isInCity(), false);
+        Point p = new Point(2, 3);
+        Point q = new Point(2, 3);
+        Check.eq("p.sameAs(q)", p.sameAs(q), true);
+        Check.eq("p.sameAs(new Point(3, 2))", p.sameAs(new Point(3, 2)),false);
+
+
+        System.out.println("---Функции---");
+        Point[] rs = loadRestaurants();
+        Check.eq("rs[1].x", rs[1].x, 8);
+        Check.eq("rs[1].y", rs[1].y, 1);
+        Check.eq("deliveryCost(rs[0], new Point(4, 4))", deliveryCost(rs[0], new Point(4, 4)), 9900);
+        Check.eq("deliveryCost(rs[0], new Point(9, 9))", deliveryCost(rs[0], new Point(9, 9)), -1);
+        Check.eq("nearestRestaurant(rs, new Point(7, 1))", nearestRestaurant(rs, new Point(7, 1)), 1);
+        Check.eq("nearestRestaurant(rs, new Point(0, 9))", nearestRestaurant(rs, new Point(0, 9)), 3);
+        Check.eq("nearestRestaurant(new Point[0], ...)", nearestRestaurant(new Point[0], new Point(0, 0)), -1);
+
+        Point A = new Point(2, 3);
+        Point B = A;
+        B.x = 10;
+        System.out.println(A.x);
+
+        Point V = new Point(2, 3);
+        System.out.println(A == V);
+        System.out.println(A == B);
+
+        Point[] M = new Point[3];
+        M[0] = A;
+        System.out.println(M[0].x);
+        System.out.println(M[1]);
+
+        shiftRight(A);
+        System.out.println(A.x);
+
+
     }
 }
