@@ -148,7 +148,21 @@ public class Delivery {
         return deliveryCost(from.distanceTo(to));
     }
 
-
+    public static int nearestRestaurant(Point[] restaurants, Point p){
+        int minDist = 10000;
+        if (restaurants.length == 0){
+            return -1;
+        }
+        int index = 0;
+        for (int i = 0; i < restaurants.length; i++){
+            int dist = restaurants[i].distanceTo(p);
+            if (dist < minDist){
+                minDist = dist;
+                index = i;
+            }
+        }
+        return index;
+    }
 
 
     public static void main(String[] args){
@@ -216,6 +230,17 @@ public class Delivery {
         Point q = new Point(2, 3);
         Check.eq("p.sameAs(q)", p.sameAs(q), true);
         Check.eq("p.sameAs(new Point(3, 2))", p.sameAs(new Point(3, 2)),false);
+
+
+        System.out.println("---Функции---");
+        Point[] rs = loadRestaurants();
+        Check.eq("rs[1].x", rs[1].x, 8);
+        Check.eq("rs[1].y", rs[1].y, 1);
+        Check.eq("deliveryCost(rs[0], new Point(4, 4))", deliveryCost(rs[0], new Point(4, 4)), 9900);
+        Check.eq("deliveryCost(rs[0], new Point(9, 9))", deliveryCost(rs[0], new Point(9, 9)), -1);
+        Check.eq("nearestRestaurant(rs, new Point(7, 1))", nearestRestaurant(rs, new Point(7, 1)), 1);
+        Check.eq("nearestRestaurant(rs, new Point(0, 9))", nearestRestaurant(rs, new Point(0, 9)), 3);
+        Check.eq("nearestRestaurant(new Point[0], ...)", nearestRestaurant(new Point[0], new Point(0, 0)), -1);
 
     }
 }
