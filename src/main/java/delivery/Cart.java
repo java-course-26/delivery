@@ -14,6 +14,13 @@ public class Cart {
         return summa;
     }
 
+    public static int cartTotal(CartItem[] items) {
+        int sum = 0;
+        for (int i = 0; i < items.length; i++) {
+            sum += items[i].total();
+        }
+        return sum;
+    }
 
     /** Сколько раз блюдо dishIndex лежит в корзине. */
     public static int countOf(int[] cart, int dishIndex) {
