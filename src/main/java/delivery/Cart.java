@@ -166,6 +166,9 @@ public class Cart {
         }
         return result;
     }
+    public static void addOne(CartItem item) {
+        item.add(1);
+    }
 
 
     public static void main(String[] args) {
@@ -239,5 +242,25 @@ public class Cart {
     int[] cart = {2, 0, 2, 2};
     Check.eq("toItems({2, 0, 2, 2}).length", toItems(cart).length, 2);
     Check.eq("две версии cartTotal", cartTotal(toItems(cart)), cartTotal(cart));
+
+    System.out.println("--- Объекты и ссылки ---");
+    // 1
+        CartItem o = new CartItem(3, 1);
+        CartItem b = o;
+        b.add(2);
+        System.out.println("1)" + o.quantity);
+    // 2
+        CartItem v = new CartItem(3, 1);
+        System.out.println("2) o == v: " + (o == v));
+        System.out.println("2) o == b: " + (o == b));
+    // 3
+        CartItem[] m = new CartItem[3];
+        m[0] = o;
+        System.out.println("3) m[0].quantity: " + m[0].quantity);
+        System.out.println("3) m[1]: " + m[1]);
+    // 4
+        addOne(o);
+        System.out.println("4) itema.quantity после addOne: " + o.quantity);
+
     }
 }
