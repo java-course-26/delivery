@@ -33,6 +33,16 @@ public class Cart {
         return count;
     }
 
+    public static int countOf(CartItem[] items, int dishIndex) {
+        for (int i = 0; i < items.length; i++) {
+            if (items[i].dishIndex == dishIndex) {
+                return items[i].quantity;
+            }
+        }
+        return 0;
+    }
+
+
     /** Сколько разных блюд в корзине: {0, 0, 3, 3, 2} → 3. */
     public static int distinctCount(int[] cart) {
         int uniqueCount = 0;
@@ -222,5 +232,12 @@ public class Cart {
     Check.eq("items[0].dishIndex", items[0].dishIndex, 0);
     Check.eq("items[0].quantity", items[0].quantity, 2);
     Check.eq("items[1].dishIndex", items[1].dishIndex, 3);
+    Check.eq("cartTotal(items)", cartTotal(items), 77000);
+    Check.eq("countOf(items, 0)", countOf(items, 0), 2);
+    Check.eq("countOf(items, 5)", countOf(items, 5), 0);
+    Check.eq("cartTotal(toItems({}))", cartTotal(toItems(new int[]{})), 0);
+    int[] cart = {2, 0, 2, 2};
+    Check.eq("toItems({2, 0, 2, 2}).length", toItems(cart).length, 2);
+    Check.eq("две версии cartTotal", cartTotal(toItems(cart)), cartTotal(cart));
     }
 }
