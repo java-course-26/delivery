@@ -5,7 +5,6 @@ package src.main.java.delivery;
  * Корзина (int[] cart) — массив индексов блюд: {0, 0, 3} значит «две порции пельменей и морс».
  */
 public class Cart {
-
     /** Сумма корзины в копейках. Пустая корзина — 0. */
     public static int cartTotal(int[] cart) {
         int summa = 0;
@@ -14,6 +13,7 @@ public class Cart {
         }
         return summa;
     }
+
 
     /** Сколько раз блюдо dishIndex лежит в корзине. */
     public static int countOf(int[] cart, int dishIndex) {
@@ -125,6 +125,31 @@ public class Cart {
         }
         return totalSum;
     }
+    public static CartItem[] toItems(int[] cart){
+        CartItem[] items = new CartItem[cart.length];
+        int size = 0;
+        for (int dishIndex : cart) {
+            int found = -1;
+            for (int j = 0; j < size; j++) {
+                if (items[j].dishIndex == dishIndex) {
+                    found = j;
+                    break;
+                }
+            }
+            if (found != -1) {
+                items[found].add(1);
+            }
+            else {
+                items[size++] = new CartItem(dishIndex, 1);
+            }
+        }
+        CartItem[] result = new CartItem[size];
+        for (int i = 0; i < size; i++){
+            result[i] = items[i];
+        }
+        return result;
+    }
+
 
     public static void main(String[] args) {
         Check.eq("cartTotal({0, 0, 3})", cartTotal(new int[]{0, 0, 3}), 77000);
@@ -183,5 +208,12 @@ public class Cart {
     c.add(2);
     Check.eq("после c.add(2):c.quantity", c.quantity,3);
     Check.eq("после c.add(2):c.total", c.total(),27000);
+
+    System.out.println("--- Функции ---");
+    CartItem[] items = toItems(new int[]{0, 0, 3});
+    Check.eq("toItems({0, 0, 3}).length", items.length, 2);
+    Check.eq("items[0].dishIndex", items[0].dishIndex, 0);
+    Check.eq("items[0].quantity", items[0].quantity, 2);
+    Check.eq("items[1].dishIndex", items[1].dishIndex, 3);
     }
 }
