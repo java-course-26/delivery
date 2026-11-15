@@ -11,6 +11,11 @@ public class Menu {
     /**
      * Индекс первого блюда с таким названием или -1, если такого нет.
      */
+    public static void increasePrice(Dish dish, int amount) {
+        if (dish != null) {
+            dish.price += amount;
+        }
+    }
     
     public static Dish[] loadDishes() {
         int n = DeliveryData.dishNames.length;
@@ -227,6 +232,29 @@ public static int cheapestInRestaurant(Dish[] menu, int restaurantId) {
         Check.eq("findDish(menu, null)", findDish(menu, null), -1);
         Check.eq("cheapestInRestaurant(menu, 0)", cheapestInRestaurant(menu, 0), 3);
         Check.eq("cheapestInRestaurant(menu, 9)", cheapestInRestaurant(menu, 9), -1);
+                System.out.println("--- Практикум по объектам ---");
+        
+        // 1. Создать блюдо А и переменную Б, присвоить А в Б, изменить поле через Б
+        Dish A = new Dish("Борщ", 31000, 0, 1, 10);
+        Dish B = A;
+        B.discount(10); // меняем поле через Б
+        System.out.println("Цена А после изменения через Б: " + A.price); // Увидим измененную цену
+
+        // 2. Создать блюдо В с теми же данными, вывести А == В и А == Б
+        Dish V = new Dish("Борщ", 31000, 0, 1, 10);
+        System.out.println("A == V: " + (A == V)); // false (разные объекты в памяти)
+        System.out.println("A == B: " + (A == B)); // true (одна и та же ссылка)
+
+        // 3. Массив блюд М на 3 ячейки, запись только в первую
+        Dish[] M = new Dish[3];
+        M[0] = A;
+        System.out.println("Поле name первой ячейки M[0]: " + M[0].name);
+        System.out.println("Вторая ячейка M[1] целиком: " + M[1]); // Выведет null
+
+        // 4. Вызов функции увеличения цены
+        increasePrice(A, 5000);
+        System.out.println("Цена А после increasePrice: " + A.price);
+
 
     }
 }
