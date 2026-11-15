@@ -11,6 +11,22 @@ public class Menu {
     /**
      * Индекс первого блюда с таким названием или -1, если такого нет.
      */
+    
+    public static Dish[] loadDishes() {
+        int n = DeliveryData.dishNames.length;
+        Dish[] dishes = new Dish[n];
+        for (int i = 0; i < n; i++) {
+            dishes[i] = new Dish(
+                DeliveryData.dishNames[i],
+                DeliveryData.dishPrices[i],
+                DeliveryData.dishRestaurant[i],
+                DeliveryData.dishCategory[i],
+                DeliveryData.dishCookMinutes[i]
+            );
+        }
+        return dishes;
+    }
+
     public static int findDish(String name) {
         
         if(name == null){
@@ -25,6 +41,17 @@ public class Menu {
     return -1;
 }
     
+public static int findDish(Dish[] menu, String name) {
+        if (menu == null || name == null) {
+            return -1;
+        }
+        for (int i = 0; i < menu.length; i++) {
+            if (menu[i] != null && name.equals(menu[i].name)) {
+                return i;
+            }
+        }
+        return -1;
+    }
 
 
 
@@ -43,7 +70,20 @@ public class Menu {
         }
         return cheapestIndex;
     }
-
+public static int cheapestInRestaurant(Dish[] menu, int restaurantId) {
+        if (menu == null) {
+            return -1;
+        }
+        int cheapestIndex = -1;
+        for (int i = 0; i < menu.length; i++) {
+            if (menu[i] != null && menu[i].restaurantId == restaurantId) {
+                if (cheapestIndex == -1 || menu[i].isCheaperThan(menu[cheapestIndex])) {
+                    cheapestIndex = i;
+                }
+            }
+        }
+        return cheapestIndex;
+    }
     /** Сколько блюд стоят от min до max копеек включительно. */
     public static int countInPriceRange(int min, int max) {
         int count = 0;
@@ -179,5 +219,14 @@ public class Menu {
         Check.eq("борщ - не напиток", new Dish("Борщ", 31000,0,1,10).isDrink(),false);
         borsch.discount(10);
         Check.eq("после borsch.discount(10): borsch.price",borsch.price,27900);
+        System.out.println("---Функции---");
+        Dish[] menu = loadDishes();
+        Check.eq("menu.length", menu.length, 19);
+        Check.eq("menu[3].name", menu[3].name, "Морс клюквенный");
+        Check.eq("findDish(menu, \"Борщ\")", findDish(menu, "Борщ"), 2);
+        Check.eq("findDish(menu, null)", findDish(menu, null), -1);
+        Check.eq("cheapestInRestaurant(menu, 0)", cheapestInRestaurant(menu, 0), 3);
+        Check.eq("cheapestInRestaurant(menu, 9)", cheapestInRestaurant(menu, 9), -1);
+
     }
 }
