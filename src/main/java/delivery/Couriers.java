@@ -1,12 +1,22 @@
 package src.main.java.delivery;
 
 import java.sql.SQLOutput;
+import java.util.*;
 
 /**
  * Модуль 6. КУРЬЕРЫ.
  * Данные — DeliveryData.courierNames, courierX, courierY, courierBusy, courierOrdersToday.
  */
 public class Couriers {
+
+    public static Courier[] loadCouriers() {
+        int sumCouriers = DeliveryData.courierNames.length;
+        Courier[] cour = new Courier[sumCouriers];
+        for(int i=0;i<sumCouriers;i++){
+            cour[i] = new Courier(DeliveryData.courierNames[i],DeliveryData.courierX[i], DeliveryData.courierY[i],DeliveryData.courierBusy[i],DeliveryData.courierOrdersToday[i]);
+        }
+        return cour;
+    }
 
     /** Сколько курьеров сейчас свободны. */
     public static int freeCount() {
@@ -18,7 +28,15 @@ public class Couriers {
         }
         return counter;
     }
-
+    public static int freeCount(Courier[] cour) {
+        int counter = 0;
+        for (Courier c : cour){
+            if (c.busy==false){
+                counter++;
+            }
+        }
+        return counter;
+    }
     /** Свободный курьер с наименьшим числом заказов за день. Нет свободных — -1. */
     public static int leastLoadedFree() {
         if (DeliveryData.courierNames == null || DeliveryData.courierBusy == null || DeliveryData.courierOrdersToday == null){
@@ -31,6 +49,31 @@ public class Couriers {
             if ((DeliveryData.courierBusy[i]==false) &&  (naimZakaz > DeliveryData.courierOrdersToday[i])){
                 name = DeliveryData.courierNames[i];
                 naimZakaz = DeliveryData.courierOrdersToday[i];
+                figovyKurier = i;
+            }
+        }
+        return figovyKurier;
+    }
+    public static int leastLoadedFree(Courier[] couriers) {
+        boolean flag = false;
+        for(Courier cour:couriers){
+            if (cour.busy==false){
+                flag = true;
+                break;
+            }
+        }
+        if (flag == false){
+            return -1;
+        }
+
+
+        int naimZakaz = Integer.MAX_VALUE;
+        int figovyKurier = 0;
+        String name = "";
+        for (int i=0;i<couriers.length;i++){
+            if ((couriers[i].busy==false) &&  (naimZakaz > couriers[i].currentOrders)){
+                name = couriers[i].name;
+                naimZakaz = couriers[i].currentOrders;
                 figovyKurier = i;
             }
         }
@@ -115,6 +158,8 @@ public class Couriers {
         return index_courier;
     }
 
+
+
     public static void main(String[] args) {
         Check.eq("freeCount()", freeCount(), 4);
         Check.eq("leastLoadedFree()", leastLoadedFree(), 2);
@@ -129,5 +174,24 @@ public class Couriers {
         Check.eq("nearestFree(5, 5)", nearestFree(5, 5), 2);
         Check.eq("nearestFree(1, 9)", nearestFree(1, 9), 3);
         Check.eq("nearestFree(4, 3)", nearestFree(4, 3), 0);
+
+        System.out.println("--Методы класса--");
+        Courier c = new Courier("Timur",5,5,false,4);
+        c.takeOrder();
+        Check.eq("После takeOrder: c.busy",c.busy,true);
+        Check.eq("После takeOrder: c.currentOrders",c.currentOrders,5);
+        Courier m = new Courier("MArina",7,2,true,12);
+        Check.eq("m.busiertahn(c)",m.busierThan(c),true);
+        Check.eq("c.busiertahn(m)",c.busierThan(m),false);
+
+        System.out.println("--Функции--");
+        Courier[] couriers = loadCouriers();
+        Check.eq("length",couriers.length,6);
+        Check.eq("couriers[1].name",couriers[1].name,"Марина");
+        Check.eq("freeCount(couriers)",freeCount(couriers),freeCount());
+        //Check.eq("leastLoadedFree(couriers)",leastLoadedFree(couriers),2);
+        couriers[2].takeOrder();
+        //Check.eq("после takeOrder [2]",leastLoadedFree(couriers),0);
+        //Check.eq("leastLoadedFree(new Courier[0])",leastLoadedFree(new Courier[0]),-1);
     }
 }
