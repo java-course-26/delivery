@@ -8,7 +8,22 @@ public class Point {
         this.y = y;
     }
 
+    public boolean isInCity(){
+        return Delivery.isInCity(x, y);
+    }
+
+    public boolean sameAs(Point other){
+        if (x == other.x){
+            if (y == other.y){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int distanceTo(Point other){
         return Delivery.distance(x, y, other.x, other.y);
     }
 }
+
+
