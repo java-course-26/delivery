@@ -6,7 +6,7 @@ import java.util.Arrays;
  * Модуль 8. ОТЗЫВЫ И РЕЙТИНГ.
  */
 public class Reviews {
-    public static Review[] loadReviews() 
+    // public static Review[] loadReviews() 
 
 
 
@@ -21,17 +21,17 @@ public class Reviews {
         }
         return count == 0 ? 0 : (double) sum / count;
     }
-    public static double averageRating(Review[] reviews,int restaurantId) {
-        int sum = 0, count = 0;
-        for (int i = 0; i < reviews.length; i++) {
-            if (reviews[i].restaurantId ) {
+    // public static double averageRating(Review[] reviews,int restaurantId) {
+    //     int sum = 0, count = 0;
+    //     for (int i = 0; i < reviews.length; i++) {
+    //         if (reviews[i].restaurantId ) {
 
-            }
+    //         }
 
-        }
+    //     }
 
         
-    }
+    // }
 
     /** Сколько у ресторана отзывов с оценкой stars. */
     public static int countByStars(int restaurantId, int stars) {
