@@ -6,7 +6,16 @@ import java.util.Arrays;
  * Модуль 8. ОТЗЫВЫ И РЕЙТИНГ.
  */
 public class Reviews {
-    public static Review[] loadReviews() 
+    public static Review[] loadReviews() {
+        Review[] reviews;
+        reviews = new Review[DeliveryData.reviewRestaurant.length];
+
+        for (int i=0;i<reviews.length; i++) {
+            Review review1 = new Review(DeliveryData.reviewRestaurant[i],DeliveryData.reviewStars[i]);
+            reviews[i] = review1;
+        }
+        return reviews;
+    }
 
 
 
@@ -24,11 +33,14 @@ public class Reviews {
     public static double averageRating(Review[] reviews,int restaurantId) {
         int sum = 0, count = 0;
         for (int i = 0; i < reviews.length; i++) {
-            if (reviews[i].restaurantId ) {
+            if (reviews[i].restaurantId == restaurantId) {
+                sum += reviews[i].stars;
+                count ++;
 
             }
 
         }
+        return count == 0 ? 0 : (double) sum / count;
 
         
     }
@@ -147,6 +159,10 @@ public class Reviews {
         Review a = new Review(2,5);
         Check.eq("a.sameRestaurant(new Review(2,1))",a.sameRestaurant(new Review(2, 1)),true);
         Check.eq("a.sameRestaurant(new Review(3,5))",a.sameRestaurant(new Review(3, 5)),false);
+        System.out.println("--Функции--");
+        Review[] reviews = loadReviews();
+        Check.eq("reviews.length",reviews.length,20);
+
 
 
 
