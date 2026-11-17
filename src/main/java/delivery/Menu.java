@@ -1,5 +1,7 @@
 package src.main.java.delivery;
 
+import java.util.Locale;
+
 /**
  * Модуль 1. МЕНЮ — поиск блюд и цены.
  * Все данные о блюдах — в DeliveryData (dishNames, dishPrices, dishRestaurant ...).
@@ -11,15 +13,15 @@ public class Menu {
      */
     public static int findDish(String name) {
         
-
-    for (int i = 0; i < DeliveryData.dishNames.length; i++) {
+        if(name == null){
+            return -1;
+        }
+    for (int i = 0; i < DeliveryData.dishNames.length - 1; i++) {
         if (name.equals(DeliveryData.dishNames[i])) {
             return i;
         }
     }
-    if (name == null) {
-        return -1;
-    }
+    
     return -1;
 }
     
@@ -28,20 +30,18 @@ public class Menu {
 
     /** Индекс самого дешёвого блюда в ресторане restaurantId. */
     public static int cheapestInRestaurant(int restaurantId) {
-       switch(restaurantId){
-        case 0:
-            return 3;
-        case 1:
-            return 7;
-        case 2:
-            return 11;
-        case 3:
-            return 14;
-        case 4:
-            return 18;
-        default:
-            return -1;
-       } 
+        int minPrice = Integer.MAX_VALUE;
+        int cheapestIndex = -1;
+
+        for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+            if (DeliveryData.dishRestaurant[i] == restaurantId) {
+                if (DeliveryData.dishPrices[i] < minPrice) {
+                    minPrice = DeliveryData.dishPrices[i];
+                    cheapestIndex = i;
+                }
+            }
+        }
+        return cheapestIndex;
     }
 
     /** Сколько блюд стоят от min до max копеек включительно. */
@@ -60,7 +60,7 @@ public class Menu {
     /** Цена в копейках → строка с рублями: 35050 → "350,50 ₽", 5 → "0,05 ₽". */
     public static String formatPrice(int kopecks) {
         double rubles = kopecks / 100.0;
-        return String.format("%.2f ₽", rubles);
+        return String.format(Locale.FRANCE,"%.2f ₽", rubles);
     }
 
     /**
@@ -110,7 +110,17 @@ public class Menu {
      * Используй Time.isOpen(...) из модуля напарника. Если ничего не нашлось — -1.
      */
     public static int findOpenDish(String name, int minute) {
-        // TODO
+        if(name == null){
+            return -1;
+        }
+        for(int i = 0; i < DeliveryData.dishNames.length; i ++){
+            if(name.equals(DeliveryData.dishNames[i])){
+                int restaurantId = DeliveryData.dishRestaurant[i];
+                if(Time.isOpen(restaurantId, minute)){
+                    return i;
+                }
+            }
+        }
         return -1;
     }
 
@@ -134,5 +144,15 @@ public class Menu {
         Check.eq("findOpenDish(\"Лимонад\", 1260)", findOpenDish("Лимонад", 1260), 11);
         Check.eq("findOpenDish(\"Лимонад\", 540)", findOpenDish("Лимонад", 540), 18);
         Check.eq("findOpenDish(\"Тирамису\", 180)", findOpenDish("Тирамису", 180), -1);
+        System.out.println("---Крайние случаи---");
+        Check.eq("findDish(null)", findDish(null), -1);
+        Check.eq("findDish(\"борщ\")", findDish("борщ"), -1);
+        Check.eq("cheapestInRestaurant(-1)", cheapestInRestaurant(-1), -1);
+        Check.eq("countInPriceRange(50000, 10000)", countInPriceRange(50000, 10000), 0);
+        Check.eq("formatPrice(0)", formatPrice(0), "0,00 ₽");
+        Check.eq("formatPrice(123456)", formatPrice(123456), "1234,56 ₽");
+        Check.eq("sortedByPrice(9)", sortedByPrice(9), new int[]{});
+     
+
     }
 }

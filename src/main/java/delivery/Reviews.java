@@ -1,9 +1,14 @@
 package src.main.java.delivery;
 
+import java.util.Arrays;
+
 /**
  * Модуль 8. ОТЗЫВЫ И РЕЙТИНГ.
  */
 public class Reviews {
+    public static Review[] loadReviews() 
+
+
 
     /** Средняя оценка ресторана. */
     public static double averageRating(int restaurantId) {
@@ -15,6 +20,17 @@ public class Reviews {
             }
         }
         return count == 0 ? 0 : (double) sum / count;
+    }
+    public static double averageRating(Review[] reviews,int restaurantId) {
+        int sum = 0, count = 0;
+        for (int i = 0; i < reviews.length; i++) {
+            if (reviews[i].restaurantId ) {
+
+            }
+
+        }
+
+        
     }
 
     /** Сколько у ресторана отзывов с оценкой stars. */
@@ -54,33 +70,43 @@ public class Reviews {
         }
         if (count == 0) return 0;
 
-        int[] ratings = new int[count];
+        int[] ratings = new int[count];  /**Создание нового массива */
+        
         int k = 0;
         for (int i = 0; i < DeliveryData.reviewRestaurant.length; i++) {
             if (DeliveryData.reviewRestaurant[i] == restaurantId) {
-                ratings[k++] = DeliveryData.reviewStars[i];
+                ratings[k] = DeliveryData.reviewStars[i];
+                k++;
             }
         }
+        double result = medianRating(ratings);
+        return result;
+        
+    }
 
+   public static double medianRating(int[] stars) {
+        int[] sorted=Arrays.copyOf(stars,stars.length);
+
+        int count = sorted.length;
         for (int i = 0; i < count - 1; i++) {
             for (int j = 0; j < count - 1 - i; j++) {
-                if (ratings[j] > ratings[j + 1]) {
-                    int t = ratings[j];
-                    ratings[j] = ratings[j + 1];
-                    ratings[j + 1] = t;
+                if (sorted[j] > sorted[j + 1]) {
+                    int t = sorted[j];
+                    sorted[j] = sorted[j + 1];
+                    sorted[j + 1] = t;
                 }
             }
         }
-
-        if (count % 2 == 1) return ratings[count / 2];
-        return (ratings[count / 2 - 1] + ratings[count / 2]) / 2.0;
+        if (count % 2 == 1) return sorted[(count / 2)];
+        return (sorted[count / 2 - 1] + sorted[count / 2]) / 2.0;
     }
 
     /** Самое дешёвое блюдо в лучшем ресторане. */
-    public static int cheapestDishInBestRestaurant() {
+    public static String cheapestDishInBestRestaurant() {
         int best = bestRestaurant();
-        if (best == -1) return 0;
-        return Menu.cheapestInRestaurant(best);
+        if (best == -1) return "0";
+        int chp = Menu.cheapestInRestaurant(best);
+        return DeliveryData.dishNames[chp];
     } 
     
 
@@ -97,7 +123,7 @@ public class Reviews {
         Check.eq("medianRating(4)", medianRating(4), 4.0);
 
         System.out.println("--- Интеграция ---");
-        /** Check.eq("cheapestDishInBestRestaurant()", cheapestDishInBestRestaurant(), "Морс клюквенный"); */
+        Check.eq("cheapestDishInBestRestaurant()", cheapestDishInBestRestaurant(), "Морс клюквенный");
         System.out.println("--- Крайние случаи ---");
         Check.eq("averageRating(9)", averageRating(9),0.0);
         Check.eq("averageRating(4)", averageRating(4),4.33);
@@ -105,11 +131,27 @@ public class Reviews {
         Check.eq("medianRating(0)", medianRating(0),5.0);
         Check.eq("medianRating(3)", medianRating(3),3.5);
         Check.eq("medianRating(9)", medianRating(9),0.0);
-        /**System.out.println("Замер");
+        System.out.println("Замер");
         Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0);
         Check.eq("medianRating({4,5})",medianRating(new int[]{4,5}),4.5);
         Check.eq("medianRating({2,5,1,5})",medianRating(new int[]{2,5,1,5}),3.5);
-        Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0); */
+        Check.eq("medianRating({5,1,3})",medianRating(new int[]{5,1,3}),3.0);
+        Check.eq("new Review(0,5).is Positive()",new Review(0, 5).isPositive(),true);
+        Check.eq("new Review(1,4).is Positive()",new Review(1, 4).isPositive(),true);
+        Check.eq("new Review(3,2).is Positive()",new Review(3, 3).isPositive(),false);
+        Check.eq("new Review(3,2).is Positive()",new Review(3, 2).isPositive(),false);
+        System.out.println("---Методы класса---");
+        Check.eq("new Review(0,1).is Negative()",new Review(0, 1).isNegative(),true);
+        Check.eq("new Review(0,2).is Negative()",new Review(0, 2).isNegative(),true);
+        Check.eq("new Review(0,3).is Negative()",new Review(0, 3).isNegative(),false);
+        Review a = new Review(2,5);
+        Check.eq("a.sameRestaurant(new Review(2,1))",a.sameRestaurant(new Review(2, 1)),true);
+        Check.eq("a.sameRestaurant(new Review(3,5))",a.sameRestaurant(new Review(3, 5)),false);
+
+
+
+
+
 
         
     }
