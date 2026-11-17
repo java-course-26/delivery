@@ -1,5 +1,7 @@
 package src.main.java.delivery;
 
+import java.util.Locale;
+
 /**
  * Модуль 1. МЕНЮ — поиск блюд и цены.
  * Все данные о блюдах — в DeliveryData (dishNames, dishPrices, dishRestaurant ...).
@@ -9,27 +11,101 @@ public class Menu {
     /**
      * Индекс первого блюда с таким названием или -1, если такого нет.
      */
+    public static void increasePrice(Dish dish, int amount) {
+        if (dish != null) {
+            dish.price += amount;
+        }
+    }
+    
+    public static Dish[] loadDishes() {
+        int n = DeliveryData.dishNames.length;
+        Dish[] dishes = new Dish[n];
+        for (int i = 0; i < n; i++) {
+            dishes[i] = new Dish(
+                DeliveryData.dishNames[i],
+                DeliveryData.dishPrices[i],
+                DeliveryData.dishRestaurant[i],
+                DeliveryData.dishCategory[i],
+                DeliveryData.dishCookMinutes[i]
+            );
+        }
+        return dishes;
+    }
+
     public static int findDish(String name) {
-        // TODO
+        
+        if(name == null){
+            return -1;
+        }
+    for (int i = 0; i < DeliveryData.dishNames.length; i++) {
+        if (name.equals(DeliveryData.dishNames[i])) {
+            return i;
+        }
+    }
+    
+    return -1;
+}
+    
+public static int findDish(Dish[] menu, String name) {
+        if (menu == null || name == null) {
+            return -1;
+        }
+        for (int i = 0; i < menu.length; i++) {
+            if (menu[i] != null && name.equals(menu[i].name)) {
+                return i;
+            }
+        }
         return -1;
     }
+
+
 
     /** Индекс самого дешёвого блюда в ресторане restaurantId. */
     public static int cheapestInRestaurant(int restaurantId) {
-        // TODO
-        return -1;
-    }
+        int minPrice = Integer.MAX_VALUE;
+        int cheapestIndex = -1;
 
+        for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+            if (DeliveryData.dishRestaurant[i] == restaurantId) {
+                if (DeliveryData.dishPrices[i] < minPrice) {
+                    minPrice = DeliveryData.dishPrices[i];
+                    cheapestIndex = i;
+                }
+            }
+        }
+        return cheapestIndex;
+    }
+public static int cheapestInRestaurant(Dish[] menu, int restaurantId) {
+        if (menu == null) {
+            return -1;
+        }
+        int cheapestIndex = -1;
+        for (int i = 0; i < menu.length; i++) {
+            if (menu[i] != null && menu[i].restaurantId == restaurantId) {
+                if (cheapestIndex == -1 || menu[i].isCheaperThan(menu[cheapestIndex])) {
+                    cheapestIndex = i;
+                }
+            }
+        }
+        return cheapestIndex;
+    }
     /** Сколько блюд стоят от min до max копеек включительно. */
     public static int countInPriceRange(int min, int max) {
-        // TODO
-        return 0;
+        int count = 0;
+        for(int i = 0; i < DeliveryData.dishPrices.length; i++){
+            if (DeliveryData.dishPrices[i] >= min &&  DeliveryData.dishPrices[i] <= max){ 
+                count++;
+            }
+            
+            
+        }
+        return count;
     }
 
     /** Цена в копейках → строка с рублями: 35050 → "350,50 ₽", 5 → "0,05 ₽". */
     public static String formatPrice(int kopecks) {
-        // TODO
-        return "";
+        double rubles = kopecks / 100.0;
+        return String.format(Locale.FRANCE,"%.2f ₽", rubles);
     }
 
     /**
@@ -37,9 +113,41 @@ public class Menu {
      * Сортировку пишем сами, без Arrays.sort.
      */
     public static int[] sortedByPrice(int restaurantId) {
-        // TODO
-        return new int[0];
+       int count = 0;
+    for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+        if (DeliveryData.dishRestaurant[i] == restaurantId) {
+            count++;
+        }
     }
+
+    int[] result = new int[count];
+    int index = 0;
+    for (int i = 0; i < DeliveryData.dishRestaurant.length; i++) {
+        if (DeliveryData.dishRestaurant[i] == restaurantId) {
+            result[index] = i;
+            index++;
+        }
+    }
+
+    for (int i = 0; i < result.length - 1; i++) {
+        int minIdx = i;
+        for (int j = i + 1; j < result.length; j++) {
+            if (DeliveryData.dishPrices[result[j]] < DeliveryData.dishPrices[result[minIdx]]) {
+                minIdx = j;
+            }
+        }
+        if (minIdx != i) {
+            int temp = result[i];
+            result[i] = result[minIdx];
+            result[minIdx] = temp;
+        }
+    }
+
+    return result;
+}
+
+        
+    
 
     /**
      * Интеграция с другим модулем (Time).
@@ -47,10 +155,33 @@ public class Menu {
      * Используй Time.isOpen(...) из модуля напарника. Если ничего не нашлось — -1.
      */
     public static int findOpenDish(String name, int minute) {
-        // TODO
+        if(name == null){
+            return -1;
+        }
+        for(int i = 0; i < DeliveryData.dishNames.length; i ++){
+            if(name.equals(DeliveryData.dishNames[i])){
+                int restaurantId = DeliveryData.dishRestaurant[i];
+                if(Time.isOpen(restaurantId, minute)){
+                    return i;
+                }
+            }
+        }
         return -1;
     }
-
+    public static boolean hasSamePrices(int[] prices){
+        for(int i = 0; i < prices.length; i++){
+            int temp = prices[i];
+            for(int j = 0; j < prices.length; j++){
+                
+                if(temp == prices[j] && i != j){
+                    
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
     public static void main(String[] args) {
         Check.eq("findDish(\"Борщ\")", findDish("Борщ"), 2);
         Check.eq("findDish(\"Лимонад\")", findDish("Лимонад"), 11);
@@ -71,5 +202,59 @@ public class Menu {
         Check.eq("findOpenDish(\"Лимонад\", 1260)", findOpenDish("Лимонад", 1260), 11);
         Check.eq("findOpenDish(\"Лимонад\", 540)", findOpenDish("Лимонад", 540), 18);
         Check.eq("findOpenDish(\"Тирамису\", 180)", findOpenDish("Тирамису", 180), -1);
+        System.out.println("---Крайние случаи---");
+        Check.eq("findDish(null)", findDish(null), -1);
+        Check.eq("findDish(\"борщ\")", findDish("борщ"), -1);
+        Check.eq("cheapestInRestaurant(-1)", cheapestInRestaurant(-1), -1);
+        Check.eq("countInPriceRange(50000, 10000)", countInPriceRange(50000, 10000), 0);
+        Check.eq("formatPrice(0)", formatPrice(0), "0,00 ₽");
+        Check.eq("formatPrice(123456)", formatPrice(123456), "1234,56 ₽");
+        Check.eq("sortedByPrice(9)", sortedByPrice(9), new int[]{});
+        System.out.println("---Замер---");
+        Check.eq("hasSamePrices(все цены меню)", hasSamePrices(DeliveryData.dishPrices),false);
+        
+        System.out.println("---Классы---");
+        Dish borsch = new Dish("Борщ", 31000,0,1,10);
+        Dish mors = new Dish("Морс клюквенный",9000,0,3,2);
+        Check.eq("mors.isCheaperThan(borsch)",mors.isCheaperThan(borsch),true);
+        Check.eq("borsch.isCheaperThan(mors)",borsch.isCheaperThan(mors),false);
+        Check.eq("borsch.isCheaperThan(borsch)",borsch.isCheaperThan(borsch),false);  
+        System.out.println("---Методы класса---");
+        Check.eq("морс - напиток", new Dish("Морс клюквенный",9000,0,3,2).isDrink(),true);      
+        Check.eq("борщ - не напиток", new Dish("Борщ", 31000,0,1,10).isDrink(),false);
+        borsch.discount(10);
+        Check.eq("после borsch.discount(10): borsch.price",borsch.price,27900);
+        System.out.println("---Функции---");
+        Dish[] menu = loadDishes();
+        Check.eq("menu.length", menu.length, 19);
+        Check.eq("menu[3].name", menu[3].name, "Морс клюквенный");
+        Check.eq("findDish(menu, \"Борщ\")", findDish(menu, "Борщ"), 2);
+        Check.eq("findDish(menu, null)", findDish(menu, null), -1);
+        Check.eq("cheapestInRestaurant(menu, 0)", cheapestInRestaurant(menu, 0), 3);
+        Check.eq("cheapestInRestaurant(menu, 9)", cheapestInRestaurant(menu, 9), -1);
+                System.out.println("--- Практикум по объектам ---");
+        
+        // 1. Создать блюдо А и переменную Б, присвоить А в Б, изменить поле через Б
+        Dish A = new Dish("Борщ", 31000, 0, 1, 10);
+        Dish B = A;
+        B.discount(10); // меняем поле через Б
+        System.out.println("Цена А после изменения через Б: " + A.price); // Увидим измененную цену
+
+        // 2. Создать блюдо В с теми же данными, вывести А == В и А == Б
+        Dish V = new Dish("Борщ", 31000, 0, 1, 10);
+        System.out.println("A == V: " + (A == V)); // false (разные объекты в памяти)
+        System.out.println("A == B: " + (A == B)); // true (одна и та же ссылка)
+
+        // 3. Массив блюд М на 3 ячейки, запись только в первую
+        Dish[] M = new Dish[3];
+        M[0] = A;
+        System.out.println("Поле name первой ячейки M[0]: " + M[0].name);
+        System.out.println("Вторая ячейка M[1] целиком: " + M[1]); // Выведет null
+
+        // 4. Вызов функции увеличения цены
+        increasePrice(A, 5000);
+        System.out.println("Цена А после increasePrice: " + A.price);
+
+
     }
 }
