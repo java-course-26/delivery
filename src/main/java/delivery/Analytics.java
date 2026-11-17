@@ -31,6 +31,13 @@ public class Analytics {
         }
         return hourStat;
     }
+    public static int[] countByHour(int[] arr) {
+        int[] hourStat = new int[24];
+        for (int i : arr){
+            hourStat[i]++;
+        }
+        return hourStat;
+    }
     /**
      * Пиковый час — час, в который было больше всего заказов.
      * Заведи массив на 24 ячейки и посчитай заказы по часам. 
@@ -47,7 +54,18 @@ public class Analytics {
         }
         return nuzhnHour;
     }
-
+    public static int peakHour(int[] arr) {
+        int maxx = 0;
+        int nuzhnHour=0;
+        int[] fph= countByHour(arr);
+        for (int i=0;i< fph.length;i++){
+            if (maxx<fph[i]){
+                nuzhnHour= i;
+                maxx = fph[i];
+            }
+        }
+        return nuzhnHour;
+    }
     /** Выручка одного ресторана за день. */
     public static int revenueByRestaurant(int restaurantId) {
         int u = restaurantId;
@@ -139,7 +157,43 @@ public class Analytics {
         }
         return sum;
     }
-
+    public static OrderRecord[] loadOrders(){
+        OrderRecord[] meow = new OrderRecord[DeliveryData.orderHour.length];
+        for (int i=0; i<meow.length;i++){
+            int hour= DeliveryData.orderHour[i];
+            int order=DeliveryData.orderTotal[i];
+            int client= DeliveryData.orderClient[i];
+            int restaurant =DeliveryData.orderRestaurant[i];
+            meow[i]= new OrderRecord(hour,order,client,restaurant);
+        }
+        return meow;
+    }
+    public static int totalRevenue(OrderRecord[] orders){
+        int sum = 0;
+        for (OrderRecord i:orders){
+            sum+=i.total;
+        }
+        return sum;
+    }
+    public static int peakHour(OrderRecord[] orders){
+        if (orders.length==0){
+            return -1;
+        }
+        int[] arr= new int[orders.length];
+        for (int i=0;i<orders.length;i++){
+            arr[i]= orders[i].hour;
+        }
+        return peakHour(arr);
+    }
+    public static int countBig(OrderRecord[] orders) {
+        int sum = 0;
+        for (int i = 0; i < orders.length; i++) {
+            if( orders[i].isBig()){
+                sum++;
+            }
+        }
+        return sum;
+    }
     public static void main(String[] args) {
 
         Check.eq("totalRevenue()", totalRevenue(), 1482000);
@@ -187,6 +241,20 @@ public class Analytics {
         Check.eq("ровно 1000р",new OrderRecord(12,100000,0,0).isBig(),true);
         Check.eq("big.sameClient(small)",big.sameClient(small),true);
         Check.eq("лругой клиент",big.sameClient(new OrderRecord(19,142000,7,1)),false);
+        System.out.println("-- Функции --");
+        OrderRecord[] orders = loadOrders();
+        Check.eq("orders.length",orders.length,20);
+        Check.eq("orders[6].isEvening()",orders[6].isEvening(),true);
+        Check.eq("orders[0].isEvening()",orders[0].isEvening(),false);
+        Check.eq("orders[3].sameClient(orders[0])",orders[3].sameClient(orders[0]),true);
+        Check.eq("totalRevenue(orders)",totalRevenue(orders),totalRevenue());
+        Check.eq("peakHour(orders)",peakHour(orders),19);
+        Check.eq("peakHour(new OrderRecord[0])",peakHour(new OrderRecord[0]),-1);
+        Check.eq("countBig(orders)",countBig(orders),4);
+
+
+
+
 
     }
 }
