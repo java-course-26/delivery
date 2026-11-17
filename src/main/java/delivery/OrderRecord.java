@@ -14,4 +14,5 @@ public class OrderRecord {
     public boolean isEvening(){
         return (18 <= hour && hour<= 22);
     }
+
 }

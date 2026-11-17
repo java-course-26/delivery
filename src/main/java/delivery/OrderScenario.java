@@ -10,9 +10,9 @@ public class OrderScenario {
         Point client = new Point(7, 8);
 
         // 1. Клиент открывает «Пиццу Паоло» и видит, открыта ли она.
-        // Restaurant pizza = Restaurant.loadAll()[2];
-        // System.out.println("Ресторан: " + pizza.getName() + ", "
-        //         + (pizza.isOpen(now) ? "открыт" : "закрыт"));
+         Restaurant pizza = Restaurant.loadAll()[2];
+         System.out.println("Ресторан: " + pizza.getName() + ", "
+                 + (pizza.isOpen(now) ? "открыт" : "закрыт"));
 
         // 2. В корзину: Маргарита, 2 Тирамису, Лимонад. Клиент видит, что в корзине.
         //    ? Какой класс хранит корзину и что он получает при создании?
