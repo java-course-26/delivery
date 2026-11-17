@@ -10,16 +10,26 @@ public class Restaurant {
         this.openTime=openTime;
         this.closeTime = closeTime;
     }
+
+    static public Restaurant[] loadAll(){
+        Restaurant[] rests = new Restaurant[DeliveryData.restaurantNames.length];
+        for (int i=0;i<DeliveryData.restaurantNames.length;i++) {
+            rests[i] = new Restaurant(DeliveryData.restaurantNames[i], DeliveryData.restaurantOpen[i], DeliveryData.restaurantClose[i]);
+        }
+        return rests;
+    }
+
     public String getName(){
         return name;
     }
     boolean isOpen(int now){
+        if (closeTime < openTime){
+            closeTime = 1440 + closeTime;
+        }
         if ((openTime < now) && (closeTime > now))
         {
-            System.out.print("Открыт");
             return true;
         }
-        System.out.print("Закрыт");
         return false;
     }
 
