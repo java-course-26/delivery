@@ -9,6 +9,6 @@ public class Point {
     }
 
     public int distanceTo(Point other){
-        return Delivery.distance(x, y, other.x, other.yы);
+        return Delivery.distance(x, y, other.x, other.y);
     }
 }
