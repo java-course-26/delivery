@@ -13,13 +13,24 @@ public class Promo {
      * "WELCOME10" → true, "welcome10" → false, "BIG-20" → false, "12345" → false.
      */
     public static boolean isValidFormat(String code) {
-        // TODO
-        return false;
+        if (code == null) {
+            return false;
+        }
+        return code.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]{5,12}$");
     }
 
-    /** Индекс промокода в DeliveryData.promoCodes или -1. */
+    /**
+     * Индекс промокода в DeliveryData.promoCodes или -1.
+     */
     public static int findPromo(String code) {
-        // TODO
+        if (code == null) {
+            return -1;
+        }
+        for (int i = 0; i < DeliveryData.promoCodes.length; i++) {
+            if (DeliveryData.promoCodes[i].equals(code)) {
+                return i;
+            }
+        }
         return -1;
     }
 
@@ -29,13 +40,23 @@ public class Promo {
      * Скидка не может быть больше суммы заказа.
      */
     public static int discountFor(int promoIndex, int total) {
-        // TODO
         return 0;
     }
 
+
+
+
     /** Индекс самого выгодного промокода для суммы total. */
     public static int bestPromo(int total) {
-        // TODO
+        int bestIndex = -1;
+        int maxDiscount = 0;
+        for (int i = 0;i < DeliveryData.promoCodes.length; i++){
+            int currentDiscount = discountFor(i, total);
+            if (currentDiscount > maxDiscount){
+                maxDiscount = currentDiscount;
+                bestIndex = i;
+            }
+        }
         return -1;
     }
 
