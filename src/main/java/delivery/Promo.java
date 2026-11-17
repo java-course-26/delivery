@@ -102,12 +102,7 @@ public class Promo {
         int discount = discountFor(promoIndex, total);
         return total - discount;
     }
-
-    public static void main(String[] args) {
-        
-
-
-    public static void main(String[] args) {
+        public static void main(String[] args) {
         Check.eq("isValidFormat(\"WELCOME10\")", isValidFormat("WELCOME10"), true);
         Check.eq("isValidFormat(\"welcome10\")", isValidFormat("welcome10"), false);
         Check.eq("isValidFormat(\"SALE\")", isValidFormat("SALE"), false);
