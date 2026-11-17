@@ -6,20 +6,22 @@ package src.main.java.delivery;
  */
 public class Promo {
 
-    /**
-     * Правильный ли формат промокода:
-     * длина от 5 до 12 символов, только заглавные латинские буквы A-Z и цифры 0-9,
-     * есть хотя бы одна буква и хотя бы одна цифра.
-     * "WELCOME10" → true, "welcome10" → false, "BIG-20" → false, "12345" → false.
-     */
     public static boolean isValidFormat(String code) {
-        // TODO
-        return false;
+        if (code == null) {
+            return false;
+        }
+        return code.matches("^(?=.*[A-Z])(?=.*[0-9])[A-Z0-9]{5,12}$");
     }
 
-    /** Индекс промокода в DeliveryData.promoCodes или -1. */
     public static int findPromo(String code) {
-        // TODO
+        if (code == null) {
+            return -1;
+        }
+        for (int i = 0; i < DeliveryData.promoCodes.length; i++) {
+            if (DeliveryData.promoCodes[i].equals(code)) {
+                return i;
+            }
+        }
         return -1;
     }
 
@@ -29,24 +31,72 @@ public class Promo {
      * Скидка не может быть больше суммы заказа.
      */
     public static int discountFor(int promoIndex, int total) {
-        // TODO
-        return 0;
-    }
+        if (promoIndex < 0 || promoIndex >= DeliveryData.promoCodes.length || total <= 0) {
+            return 0;
+        }
 
-    /** Индекс самого выгодного промокода для суммы total. */
-    public static int bestPromo(int total) {
-        // TODO
-        return -1;
+        if (total < DeliveryData.promoMinTotal[promoIndex]) {
+            return 0;
+        }
+
+        int discount = 0;
+        if (DeliveryData.promoType[promoIndex] == 0) {
+            // Процентная скидка (promoValue[promoIndex] в %)
+            discount = (int) ((long) total * DeliveryData.promoValue[promoIndex] / 100);
+        } else if (DeliveryData.promoType[promoIndex] == 1) {
+            // Фиксированная скидка в копейках
+            discount = DeliveryData.promoValue[promoIndex];
+        }
+
+        // Скидка не может превышать сумму заказа
+        return Math.min(discount, total);
     }
 
     /**
-     * Интеграция с другим модулем (Cart).
-     * Итоговая цена корзины с промокодом. Сумму считай через Cart.cartTotal(...).
-     * Если код неправильного формата или не найден — цена без скидки.
+     * Индекс самого выгодного промокода для суммы total.
      */
+    public static int bestPromo(int total) {
+        int bestIndex = -1;
+        int maxDiscount = 0;
+
+        for (int i = 0; i < DeliveryData.promoCodes.length; i++) {
+            int currentDiscount = discountFor(i, total);
+            if (currentDiscount > maxDiscount) {
+                maxDiscount = currentDiscount;
+                bestIndex = i;
+            }
+        }
+        return bestIndex;
+    }
+
+    /**
     public static int finalPrice(int[] cart, String code) {
-        // TODO
-        return 0;
+        int total = 0;
+        if (cart != null) {
+            try {
+                // Если класс Cart доступен в проекте, вызываем Cart.cartTotal(cart)
+                total = Cart.cartTotal(cart);
+            } catch (NoClassDefFoundError | NoSuchMethodError e) {
+                // Запасной расчет напрямую из DeliveryData.dishPrices, если Cart еще не скомпилирован
+                for (int dishIndex : cart) {
+                    if (dishIndex >= 0 && dishIndex < DeliveryData.dishPrices.length) {
+                        total += DeliveryData.dishPrices[dishIndex];
+                    }
+                }
+            }
+        }
+
+        if (!isValidFormat(code)) {
+            return total;
+        }
+
+        int promoIndex = findPromo(code);
+        if (promoIndex == -1) {
+            return total;
+        }
+
+        int discount = discountFor(promoIndex, total);
+        return total - discount;
     }
 
     public static void main(String[] args) {
