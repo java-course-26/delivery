@@ -189,9 +189,9 @@ public class Couriers {
         Check.eq("length",couriers.length,6);
         Check.eq("couriers[1].name",couriers[1].name,"Марина");
         Check.eq("freeCount(couriers)",freeCount(couriers),freeCount());
-        //Check.eq("leastLoadedFree(couriers)",leastLoadedFree(couriers),2);
+        Check.eq("leastLoadedFree(couriers)",leastLoadedFree(couriers),2);
         couriers[2].takeOrder();
-        //Check.eq("после takeOrder [2]",leastLoadedFree(couriers),0);
-        //Check.eq("leastLoadedFree(new Courier[0])",leastLoadedFree(new Courier[0]),-1);
+        Check.eq("после takeOrder [2]",leastLoadedFree(couriers),0);
+        Check.eq("leastLoadedFree(new Courier[0])",leastLoadedFree(new Courier[0]),-1);
     }
 }
