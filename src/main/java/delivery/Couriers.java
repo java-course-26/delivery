@@ -1,27 +1,45 @@
 package src.main.java.delivery;
-
+import java.util.Arrays;
 /**
  * Модуль 6. КУРЬЕРЫ.
  * Данные — DeliveryData.courierNames, courierX, courierY, courierBusy, courierOrdersToday.
  */
 public class Couriers {
 
+    public static long ops = 0;
+
     /** Сколько курьеров сейчас свободны. */
     public static int freeCount() {
-        // TODO
-        return 0;
+        int counter = 0;
+        for (boolean n:DeliveryData.courierBusy){
+            if (n == false){
+                counter++;
+            }
+        }
+        return counter;
     }
 
     /** Свободный курьер с наименьшим числом заказов за день. Нет свободных — -1. */
     public static int leastLoadedFree() {
-        // TODO
-        return -1;
+        int naimZakaz = Integer.MAX_VALUE;
+        int figovyKurier = -1;
+        for (int i=0;i<DeliveryData.courierNames.length;i++){
+            if ((DeliveryData.courierBusy[i]==false) &&  (naimZakaz > DeliveryData.courierOrdersToday[i])){
+                naimZakaz = DeliveryData.courierOrdersToday[i];
+                figovyKurier = i;
+            }
+        }
+        return figovyKurier;
     }
 
     /** Заработок курьера за день в копейках: 150 ₽ за заказ + бонус 500 ₽, если заказов 10 и больше. */
     public static int earnings(int courierIndex) {
-        // TODO
-        return 0;
+        if (courierIndex < 0 || courierIndex >= DeliveryData.courierNames.length){
+            return 0;
+        }
+        int bonus = DeliveryData.courierOrdersToday[courierIndex] >= 10?500:0;
+        int money = DeliveryData.courierOrdersToday[courierIndex] * 150 + bonus;
+        return money*100;
     }
 
     /**
@@ -30,9 +48,27 @@ public class Couriers {
      * Вернуть массив: сколько новых заказов получил каждый курьер.
      * DeliveryData не менять — загрузку копируем в свой массив.
      */
+
+
     public static int[] distribute(int k) {
-        // TODO
-        return new int[0];
+        int[] currentLoad = DeliveryData.courierOrdersToday.clone();
+        int[] result = new int[DeliveryData.courierNames.length];
+        for (int order = 0; order < k; order++) {
+            int minCourier = -1;
+            for (int i = 0; i < currentLoad.length; i++) {
+                if (DeliveryData.courierBusy[i]==false) {
+                    if (minCourier == -1 || currentLoad[i] < currentLoad[minCourier]) {
+                        minCourier = i;
+                    }
+                }
+            }
+            if (minCourier == -1) {
+                break;
+            }
+            result[minCourier]++;
+            currentLoad[minCourier]++;
+        }
+        return result;
     }
 
     /**
@@ -41,11 +77,90 @@ public class Couriers {
      * При равном расстоянии — тот, у кого меньше заказов за день.
      */
     public static int nearestFree(int x, int y) {
-        // TODO
-        return -1;
+        boolean isBusy = true;
+        for (int j = 0; j < DeliveryData.courierBusy.length;j++){
+            if (DeliveryData.courierBusy[j]==false){
+                isBusy = false;
+                break;
+            }
+        }
+        if (isBusy){
+            return -1;
+        }
+        int nearest = Integer.MAX_VALUE;
+        int index_courier = 0;
+        for (int i=0;i<DeliveryData.courierX.length;i++){
+            int dist = Delivery.distance(x,y,DeliveryData.courierX[i], DeliveryData.courierY[i]);
+            if (DeliveryData.courierBusy[i]){
+                continue;
+            }
+            if(dist == nearest){
+                if(DeliveryData.courierOrdersToday[index_courier] < DeliveryData.courierOrdersToday[i]){
+                    continue;
+                }else{
+                    index_courier = i;
+                }
+            }
+            if((DeliveryData.courierBusy[i]==false) && (dist < nearest)){
+                index_courier = i;
+                nearest = dist;
+            }
+        }
+        return index_courier;
+    }
+
+    public static int minLoadGap(int[] orders) {
+        if (orders.length < 2) {
+            return -1;
+        }
+        int minLoad = Integer.MAX_VALUE;
+        for (int i = 0; i < orders.length - 1; i++) {
+            for (int j = i + 1; j < orders.length; j++) {
+                int diff = Math.abs(orders[i] - orders[j]);
+                if (diff < minLoad) {
+                    minLoad = diff;
+                }
+            }
+        }
+        return minLoad;
+    }
+
+    public static int minLoadGapFast(int[] orders) {
+        if (orders.length < 2) {
+            return -1;
+        }
+        int[] sorted = orders.clone();
+        Arrays.sort(sorted);
+
+        int minGap = Integer.MAX_VALUE;
+        for (int i = 0; i < sorted.length - 1; i++) {
+            int diff = sorted[i + 1] - sorted[i];
+            if (diff < minGap) {
+                minGap = diff;
+            }
+        }
+        return minGap;
+    }
+
+    public static void bench(){
+        int[] sizes = {10,100,1000,10000};
+        for(int n : sizes){
+            int[] data = BigData.randomArray(n,0,1000000,42);
+            ops=0;
+            minLoadGap(data);
+            System.out.println(n + "\t" + ops);
+        }
     }
 
     public static void main(String[] args) {
+
+        System.out.println("--Классы--");
+        Check.eq("Гарик, 7 заказов",new Courier("Гарик",3,3,false,7).earnings(),105000);
+        Check.eq("Гульпихнур, 12 заказов",new Courier("Гульпихнур",7,2,true,12).earnings(),230000);
+        Check.eq("Диса, 3 заказов",new Courier("Диса",9,9,true,3).earnings(),45000);
+        Check.eq("Ровно 10 заказов",new Courier("Новый",0,0,false,10).earnings(),200000);
+
+
         Check.eq("freeCount()", freeCount(), 4);
         Check.eq("leastLoadedFree()", leastLoadedFree(), 2);
         Check.eq("earnings(1)", earnings(1), 230000);
@@ -59,5 +174,19 @@ public class Couriers {
         Check.eq("nearestFree(5, 5)", nearestFree(5, 5), 2);
         Check.eq("nearestFree(1, 9)", nearestFree(1, 9), 3);
         Check.eq("nearestFree(4, 3)", nearestFree(4, 3), 0);
+
+        System.out.println("---Крайние случаи---");
+        Check.eq("earnings(5)",earnings(5),215000);
+        Check.eq("distribute(4)",distribute(4),new int[]{1,0,3,0,0,0});
+        Check.eq("distribute(10)",distribute(10),new int[]{3,0,6,1,0,0});
+        Check.eq("nearestFree(4,4)",nearestFree(4,4),2);
+        Check.eq("nearestFree(9,9)",nearestFree(9,9),2);
+
+        System.out.println("---Замер---");
+        Check.eq("minLoadGap(заказы курьеров)",minLoadGap(DeliveryData.courierOrdersToday),1);
+        Check.eq("minLoadGapFAST({10,4})",minLoadGapFast(new int[]{10,4}),6);
+        Check.eq("minLoadGap({5})",minLoadGap(new int[]{5}),-1);
+        Check.eq("minLoadGap([])", minLoadGap(new int[]{}), -1);
+        bench();
     }
 }
