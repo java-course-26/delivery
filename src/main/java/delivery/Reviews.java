@@ -16,6 +16,17 @@ public class Reviews {
         }
         return reviews;
     }
+    public static int countPositive(Review[] reviews,int restaurantId) {
+        int count = 0;
+        for (int i = 0; i<reviews.length;i++) {
+            if (reviews[i].restaurantId == restaurantId) {
+                if (reviews[i].isPositive()) {
+                count +=1;
+                }
+            }
+        }
+        return count;
+    }
 
 
 
@@ -162,6 +173,15 @@ public class Reviews {
         System.out.println("--Функции--");
         Review[] reviews = loadReviews();
         Check.eq("reviews.length",reviews.length,20);
+        Check.eq("reviews[0].isPositive()",reviews[0].isPositive(),true);
+        Check.eq("reviews[10].isNegative()",reviews[10].isNegative(),true);
+        Check.eq("averageRating(reviews,0)",averageRating(reviews,0),4.4);
+        Check.eq("averageRating(reviews,3)",averageRating(reviews,3),3.5);
+        Check.eq("averageRating(reviews,9)",averageRating(reviews,9),0.0);
+        Check.eq("countPositive(reviews,1)",countPositive(reviews,1),5);
+
+
+
 
 
 
