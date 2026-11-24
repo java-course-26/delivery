@@ -14,4 +14,14 @@ public class WorkingHours {
             return minute >= open || minute < close;
         }
     }
+    public boolean isNight() {
+        return (open > close);
+    }
+    public int minutesOpen() {
+        if (open <= close) {
+            return close - open;
+        } else {
+            return (1440-open) + close;
+        } 
+    }
 }

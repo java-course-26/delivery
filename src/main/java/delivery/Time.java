@@ -119,7 +119,7 @@ public class Time {
         Check.eq("isOpen(3,1439)",isOpen(3,1439),true);
         Check.eq("minutesUntilOpen(4,1200)",minutesUntilOpen(4,1200),720);
 
-        System.out.println("--- Классы ---");
+        System.out.println("--- Классы и методы класса ---");
         WorkingHours day = new WorkingHours(600, 1320);
         WorkingHours night = new WorkingHours(600, 120);
         Check.eq("day.isOpen(720)", day.isOpen(720), true);
@@ -127,5 +127,9 @@ public class Time {
         Check.eq("night.isOpen(1430)", night.isOpen(1430), true);
         Check.eq("night.isOpen(60)", night.isOpen(60), true);
         Check.eq("night.isOpen(300)", night.isOpen(300), false);
+        Check.eq("day.isNight()", day.isNight(), false);
+        Check.eq("night.isNight()", night.isNight(), true);
+        Check.eq("day.minutesOpen()", day.minutesOpen(), 720);
+        Check.eq("night.minutesOpen()", night.minutesOpen(), 960);
     }
 }
